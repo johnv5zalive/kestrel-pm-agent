@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 176 40" width="176" height="40" role="img" aria-label="Kestrel Property Management">
+  <!-- Icon badge -->
+  <rect x="0" y="4" width="32" height="32" rx="8" fill="#14584A"/>
+  <!-- Kestrel mark: a stylized falcon in flight -->
+  <path d="M6 25 C 11 15, 14.5 17.5, 16 21 C 17.5 17.5, 21 15, 26 25 C 21.5 21.5, 17.5 21.5, 16 23.5 C 14.5 21.5, 10.5 21.5, 6 25 Z"
+        fill="#FFFFFF"/>
+  <circle cx="16" cy="15.5" r="1.6" fill="#7FD8C4"/>
+  <!-- Wordmark -->
+  <text x="42" y="23" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="800" fill="#14584A" letter-spacing="-0.4">Kestrel</text>
+  <text x="42.5" y="33" font-family="Arial, Helvetica, sans-serif" font-size="7.5" font-weight="700" letter-spacing="1.8" fill="#2F7A69">PROPERTY MGMT</text>
+</svg>

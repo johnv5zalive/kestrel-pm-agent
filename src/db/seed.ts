@@ -10,6 +10,7 @@
 
 import { db } from './client.js'
 import { seedApprovals } from './seed_approvals.js'
+import { seedCompliance } from './seed_compliance.js'
 import type { AgentState, InboundClassification } from '../agent/state_machine.js'
 
 export const DEMO_CLOCK_ISO = '2026-04-30T09:00:00.000Z'
@@ -1621,6 +1622,8 @@ const JOBS: SeedJob[] = [
 export function runSeed() {
   const tx = db.transaction(() => {
     // Wipe existing rows. CASCADE handles children.
+    db.prepare('DELETE FROM vendor_documents').run()
+    db.prepare('DELETE FROM vendors').run()
     db.prepare('DELETE FROM approval_requests').run()
     db.prepare('DELETE FROM owners').run()
     db.prepare('DELETE FROM customers').run()
@@ -1763,6 +1766,10 @@ export function runSeed() {
     // a partial seed can never be observed, and after the properties exist
     // because approvals hang off locations.
     seedApprovals()
+
+    // Vendors and their certificates. After approvals, because a lapsed
+    // certificate is tied back to the jobs that vendor is quoted on.
+    seedCompliance()
 
     // Reset settings to canonical demo state.
     db.prepare(

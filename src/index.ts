@@ -10,6 +10,7 @@ import { layout } from './views/layout.js'
 import { html } from 'hono/html'
 import inboxRoute from './routes/inbox.js'
 import approvalsRoute from './routes/approvals.js'
+import complianceRoute from './routes/compliance.js'
 import demoRoute from './routes/demo.js'
 import adminRoute from './routes/admin.js'
 import twilioWebhookRoute from './routes/webhooks_twilio.js'
@@ -32,6 +33,7 @@ app.get('/', (c) => {
 
 app.route('/inbox', inboxRoute)
 app.route('/approvals', approvalsRoute)
+app.route('/compliance', complianceRoute)
 app.route('/demo', demoRoute)
 app.route('/admin', adminRoute)
 app.route('/webhooks/twilio', twilioWebhookRoute)

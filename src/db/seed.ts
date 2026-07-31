@@ -137,38 +137,38 @@ const JOBS: SeedJob[] = [
       },
     ],
     recurringServiceId: 'RS-MAPLEWOOD-ANNUAL',
-    recurringServiceName: 'Annual PM',
+    recurringServiceName: 'Annual Service',
     cadence: 'annual',
     jobSummary:
-      '1x rooftop HVAC unit serving the leasing office. Annual PM (filter + coil service). On-site office is the best contact.',
-    rseId: 'RSE-MAPLEWOOD-2026-06',
+      '1x rooftop HVAC unit serving the leasing office. Annual Service (filter + coil service). On-site office is the best contact.',
+    rseId: 'SMV-MAPLEWOOD-2026-06',
     dueDate: '2026-06-15',
     agentState: 'Upcoming',
-    appfolioStatus: 'Not Attempted',
+    appfolioStatus: 'Not contacted yet',
     outreach: [],
     replies: [],
     logs: [
       {
         ts: '2026-04-26T20:14:00.000Z',
         level: 'info',
-        line: 'Ingested from AppFolio via Adapter 2A (scheduled XLSX report).',
+        line: 'Read in from the weekly AppFolio maintenance report.',
       },
       {
         ts: '2026-04-26T20:14:01.000Z',
         level: 'info',
-        line: 'Extracted 1 equipment item from Work Order summary; no POC hint detected.',
+        line: 'Found 1 piece of equipment on this property. No named contact on the record.',
       },
       {
         ts: '2026-04-26T20:14:01.000Z',
         level: 'info',
-        line: 'Outreach scheduled: Email T-10 on 2026-06-05.',
+        line: 'First reminder scheduled for June 5, 10 days before the visit.',
       },
     ],
     transitions: [
       {
         from: null,
         to: 'Upcoming',
-        reason: 'Ingested from AppFolio',
+        reason: 'Read in from AppFolio',
         at: '2026-04-26T20:14:00.000Z',
       },
     ],
@@ -211,21 +211,21 @@ const JOBS: SeedJob[] = [
       },
     ],
     recurringServiceId: 'RS-NORTHGATE-BIANNUAL',
-    recurringServiceName: 'BiAnnual PM',
+    recurringServiceName: 'Semi-Annual Service',
     cadence: 'biannual',
     jobSummary:
-      'BiAnnual PM. 2 units in the clubhouse mechanical room. POC: Camila (property manager), prefers email.',
-    rseId: 'RSE-NORTHGATE-2026-06',
+      'Semi-Annual Service. 2 units in the clubhouse mechanical room. POC: Camila (property manager), prefers email.',
+    rseId: 'SMV-NORTHGATE-2026-06',
     dueDate: '2026-06-22',
     agentState: 'Upcoming',
-    appfolioStatus: 'Not Attempted',
+    appfolioStatus: 'Not contacted yet',
     outreach: [],
     replies: [],
     logs: [
       {
         ts: '2026-04-26T20:14:02.000Z',
         level: 'info',
-        line: 'Ingested from AppFolio via Adapter 2A.',
+        line: 'Read in from the weekly AppFolio maintenance report.',
       },
       {
         ts: '2026-04-26T20:14:02.000Z',
@@ -237,7 +237,7 @@ const JOBS: SeedJob[] = [
       {
         from: null,
         to: 'Upcoming',
-        reason: 'Ingested from AppFolio',
+        reason: 'Read in from AppFolio',
         at: '2026-04-26T20:14:02.000Z',
       },
     ],
@@ -277,21 +277,21 @@ const JOBS: SeedJob[] = [
       { id: 'EQ-HARBOR-3', itemName: 'AO Smith BTH-199', itemDescription: '100-gal commercial water heater' },
     ],
     recurringServiceId: 'RS-HARBOR-MONTHLY',
-    recurringServiceName: 'Monthly PM',
+    recurringServiceName: 'Monthly Service',
     cadence: 'monthly',
     jobSummary:
-      'Monthly PM — occupied building, prefers early mornings before residents leave for work. Devin owns the schedule.',
-    rseId: 'RSE-HARBOR-2026-06',
+      'Monthly Service — occupied building, prefers early mornings before residents leave for work. Devin owns the schedule.',
+    rseId: 'SMV-HARBOR-2026-06',
     dueDate: '2026-06-08',
     agentState: 'Upcoming',
-    appfolioStatus: 'Not Attempted',
+    appfolioStatus: 'Not contacted yet',
     outreach: [],
     replies: [],
     logs: [
       {
         ts: '2026-04-26T20:14:03.000Z',
         level: 'info',
-        line: 'Ingested from AppFolio via Adapter 2A.',
+        line: 'Read in from the weekly AppFolio maintenance report.',
       },
       {
         ts: '2026-04-26T20:14:03.000Z',
@@ -303,13 +303,13 @@ const JOBS: SeedJob[] = [
       {
         from: null,
         to: 'Upcoming',
-        reason: 'Ingested from AppFolio',
+        reason: 'Read in from AppFolio',
         at: '2026-04-26T20:14:03.000Z',
       },
     ],
   },
 
-  // ---- 4. IN-PROGRESS · Email T-10 sent ----
+  // ---- 4. IN-PROGRESS · First reminder emailed ----
   {
     customerId: 'CUST-CEDAR-RIDGE',
     customerName: 'Cedar Ridge HOA',
@@ -341,21 +341,21 @@ const JOBS: SeedJob[] = [
       },
     ],
     recurringServiceId: 'RS-CEDAR-BIANNUAL',
-    recurringServiceName: 'BiAnnual PM',
+    recurringServiceName: 'Semi-Annual Service',
     cadence: 'biannual',
-    jobSummary: 'BiAnnual PM — single heat pump serving the community clubhouse.',
-    rseId: 'RSE-CEDAR-2026-05',
+    jobSummary: 'Semi-Annual Service — single heat pump serving the community clubhouse.',
+    rseId: 'SMV-CEDAR-2026-05',
     dueDate: '2026-05-05',
     agentState: 'InProgress_EmailT10_Sent',
-    appfolioStatus: 'Contacted',
+    appfolioStatus: 'Outreach sent',
     outreach: [
       {
         channel: 'email',
         contactId: 'CONT-CEDAR-1',
         recipient: 'kelly@cedarridgehoa.com',
-        subject: 'BiAnnual PM for Cedar Ridge HOA — let us know what date works',
+        subject: 'Semi-annual service at Cedar Ridge: what day works?',
         body:
-          'Hi Kelly,\n\nYour next BiAnnual maintenance visit for the clubhouse heat pump is coming up around the first week of May. Reply with a date that works, or use the booking form at kestrelpm.com/request-service.\n\n— Kestrel Property Management',
+          'Hi Kelly,\n\nThe clubhouse heat pump at Cedar Ridge is due for its semi-annual service the week of May 4.\n\nReply with a day that works and we will confirm a time with the technician.\n\nThanks,\nKestrel Property Management',
         sentAt: '2026-04-25T13:30:00.000Z',
       },
     ],
@@ -364,36 +364,36 @@ const JOBS: SeedJob[] = [
       {
         ts: '2026-04-21T20:14:00.000Z',
         level: 'info',
-        line: 'Ingested from AppFolio via Adapter 2A.',
+        line: 'Read in from the weekly AppFolio maintenance report.',
       },
       {
         ts: '2026-04-25T13:30:00.000Z',
         level: 'info',
-        line: 'Sending Email T-10 to kelly@cedarridgehoa.com…',
+        line: 'Emailing kelly@cedarridgehoa.com...',
       },
       {
         ts: '2026-04-25T13:30:01.000Z',
         level: 'success',
-        line: 'Email T-10 sent (intercepted in demo — no real mail left the agent).',
+        line: 'First reminder emailed.',
       },
     ],
     transitions: [
       {
         from: null,
         to: 'Upcoming',
-        reason: 'Ingested from AppFolio',
+        reason: 'Read in from AppFolio',
         at: '2026-04-21T20:14:00.000Z',
       },
       {
         from: 'Upcoming',
         to: 'InProgress_EmailT10_Sent',
-        reason: 'Email T-10 sent',
+        reason: 'First reminder emailed',
         at: '2026-04-25T13:30:01.000Z',
       },
     ],
   },
 
-  // ---- 5. IN-PROGRESS · Email T-10 sent ----
+  // ---- 5. IN-PROGRESS · First reminder emailed ----
   {
     customerId: 'CUST-FILLMORE',
     customerName: 'Fillmore Commercial Plaza',
@@ -426,21 +426,21 @@ const JOBS: SeedJob[] = [
       { id: 'EQ-FILLMORE-2', itemName: 'Carrier 48TCED06', itemDescription: '5-ton rooftop unit, common area' },
     ],
     recurringServiceId: 'RS-FILLMORE-MONTHLY',
-    recurringServiceName: 'Monthly PM',
+    recurringServiceName: 'Monthly Service',
     cadence: 'monthly',
-    jobSummary: 'Monthly PM — two rooftop units over leased suites. Schedule with Nadia.',
-    rseId: 'RSE-FILLMORE-2026-05',
+    jobSummary: 'Monthly Service — two rooftop units over leased suites. Schedule with Nadia.',
+    rseId: 'SMV-FILLMORE-2026-05',
     dueDate: '2026-05-06',
     agentState: 'InProgress_EmailT10_Sent',
-    appfolioStatus: 'Contacted',
+    appfolioStatus: 'Outreach sent',
     outreach: [
       {
         channel: 'email',
         contactId: 'CONT-FILLMORE-1',
         recipient: 'nokoro@fillmoreplaza.com',
-        subject: 'Monthly PM for Fillmore Commercial Plaza — let us know what date works',
+        subject: 'Monthly service at Fillmore Plaza: what day works?',
         body:
-          'Hi Nadia,\n\nYour next Monthly maintenance visit for the rooftop units is coming up around the first week of May. Reply with a date that works, or use kestrelpm.com/request-service.\n\n— Kestrel Property Management',
+          'Hi Nadia,\n\nThe rooftop HVAC equipment at Fillmore Plaza is due for monthly service the week of May 4.\n\nReply with a day that works and we will confirm a time with the technician.\n\nThanks,\nKestrel Property Management',
         sentAt: '2026-04-26T13:30:00.000Z',
       },
     ],
@@ -449,36 +449,36 @@ const JOBS: SeedJob[] = [
       {
         ts: '2026-04-21T20:14:01.000Z',
         level: 'info',
-        line: 'Ingested from AppFolio via Adapter 2A.',
+        line: 'Read in from the weekly AppFolio maintenance report.',
       },
       {
         ts: '2026-04-26T13:30:00.000Z',
         level: 'info',
-        line: 'Sending Email T-10 to nokoro@fillmoreplaza.com…',
+        line: 'Emailing nokoro@fillmoreplaza.com...',
       },
       {
         ts: '2026-04-26T13:30:01.000Z',
         level: 'success',
-        line: 'Email T-10 sent (intercepted in demo).',
+        line: 'First reminder emailed.',
       },
     ],
     transitions: [
       {
         from: null,
         to: 'Upcoming',
-        reason: 'Ingested from AppFolio',
+        reason: 'Read in from AppFolio',
         at: '2026-04-21T20:14:01.000Z',
       },
       {
         from: 'Upcoming',
         to: 'InProgress_EmailT10_Sent',
-        reason: 'Email T-10 sent',
+        reason: 'First reminder emailed',
         at: '2026-04-26T13:30:01.000Z',
       },
     ],
   },
 
-  // ---- 6. IN-PROGRESS · Email T-5 sent ----
+  // ---- 6. IN-PROGRESS · Second reminder emailed ----
   {
     customerId: 'CUST-SYCAMORE',
     customerName: 'Sycamore Court Apartments',
@@ -515,31 +515,31 @@ const JOBS: SeedJob[] = [
       },
     ],
     recurringServiceId: 'RS-SYCAMORE-MONTHLY',
-    recurringServiceName: 'Monthly PM',
+    recurringServiceName: 'Monthly Service',
     cadence: 'monthly',
     jobSummary:
-      'Monthly PM — two buildings. Trevor prefers a 2pm-4pm window (between morning turns and evening make-readies).',
-    rseId: 'RSE-SYCAMORE-2026-05',
+      'Monthly Service — two buildings. Trevor prefers a 2pm-4pm window (between morning turns and evening make-readies).',
+    rseId: 'SMV-SYCAMORE-2026-05',
     dueDate: '2026-05-01',
     agentState: 'InProgress_EmailT5_Sent',
-    appfolioStatus: 'Contacted',
+    appfolioStatus: 'Outreach sent',
     outreach: [
       {
         channel: 'email',
         contactId: 'CONT-SYCAMORE-1',
         recipient: 'trevor@sycamorecourt.com',
-        subject: 'Monthly PM for Sycamore Court Apartments — let us know what date works',
+        subject: 'Monthly service at Sycamore Court: what day works?',
         body:
-          'Hi Trevor,\n\nYour Monthly maintenance visit is due around May 1. Best window is your usual 2-4pm gap. Reply with a date or use kestrelpm.com/request-service.\n\n— Kestrel Property Management',
+          'Hi Trevor,\n\nMonthly service at Sycamore Court is due May 1. We have you down as preferring the 2pm to 4pm window.\n\nReply with a day that works and we will book the technician for that window.\n\nThanks,\nKestrel Property Management',
         sentAt: '2026-04-21T13:30:00.000Z',
       },
       {
         channel: 'email',
         contactId: 'CONT-SYCAMORE-1',
         recipient: 'trevor@sycamorecourt.com',
-        subject: 'Re: Monthly PM for Sycamore Court Apartments — quick follow-up',
+        subject: 'Re: Monthly service at Sycamore Court: what day works?',
         body:
-          'Hi Trevor,\n\nFollowing up on the Monthly PM for May. Just need a date that works between now and the 8th. Reply or use kestrelpm.com/request-service.\n\n— Kestrel Property Management',
+          'Hi Trevor,\n\nFollowing up on May maintenance at Sycamore Court. We still need a day before the 8th.\n\nReply with whichever day suits and we will handle the rest.\n\nThanks,\nKestrel Property Management',
         sentAt: '2026-04-26T13:30:00.000Z',
       },
     ],
@@ -548,37 +548,37 @@ const JOBS: SeedJob[] = [
       {
         ts: '2026-04-21T13:30:00.000Z',
         level: 'success',
-        line: 'Email T-10 sent to trevor@sycamorecourt.com (intercepted in demo).',
+        line: 'First reminder emailed to trevor@sycamorecourt.com .',
       },
       {
         ts: '2026-04-26T13:30:00.000Z',
         level: 'info',
-        line: 'No reply after T-10. Sending T-5 follow-up…',
+        line: 'No reply to the first reminder. Sending a second.',
       },
       {
         ts: '2026-04-26T13:30:01.000Z',
         level: 'success',
-        line: 'Email T-5 sent (intercepted in demo).',
+        line: 'Second reminder emailed.',
       },
     ],
     transitions: [
-      { from: null, to: 'Upcoming', reason: 'Ingested', at: '2026-04-21T13:00:00.000Z' },
+      { from: null, to: 'Upcoming', reason: 'Read in from AppFolio', at: '2026-04-21T13:00:00.000Z' },
       {
         from: 'Upcoming',
         to: 'InProgress_EmailT10_Sent',
-        reason: 'Email T-10 sent',
+        reason: 'First reminder emailed',
         at: '2026-04-21T13:30:01.000Z',
       },
       {
         from: 'InProgress_EmailT10_Sent',
         to: 'InProgress_EmailT5_Sent',
-        reason: 'No reply — escalated to T-5 email',
+        reason: 'No reply, so a second reminder went out',
         at: '2026-04-26T13:30:01.000Z',
       },
     ],
   },
 
-  // ---- 7. IN-PROGRESS · Email T-5 sent ----
+  // ---- 7. IN-PROGRESS · Second reminder emailed ----
   {
     customerId: 'CUST-BRADFORD',
     customerName: 'Bradford Place Townhomes',
@@ -615,30 +615,30 @@ const JOBS: SeedJob[] = [
       },
     ],
     recurringServiceId: 'RS-BRADFORD-BIANNUAL',
-    recurringServiceName: 'BiAnnual PM',
+    recurringServiceName: 'Semi-Annual Service',
     cadence: 'biannual',
     jobSummary:
-      'BiAnnual PM — two units, clubhouse and pool house. Schedule before weekend community events.',
-    rseId: 'RSE-BRADFORD-2026-05',
+      'Semi-Annual Service — two units, clubhouse and pool house. Schedule before weekend community events.',
+    rseId: 'SMV-BRADFORD-2026-05',
     dueDate: '2026-05-04',
     agentState: 'InProgress_EmailT5_Sent',
-    appfolioStatus: 'Contacted',
+    appfolioStatus: 'Outreach sent',
     outreach: [
       {
         channel: 'email',
         contactId: 'CONT-BRADFORD-1',
         recipient: 'sdelacroix@bradfordplacehoa.com',
-        subject: 'BiAnnual PM for Bradford Place Townhomes',
+        subject: 'Semi-annual service at Bradford Place: what day works?',
         body:
-          'Hi Simone,\n\nYour BiAnnual maintenance visit is due around May 4. Reply with a date that works (we know weekends are reserved for community events).\n\n— Kestrel Property Management',
+          'Hi Simone,\n\nSemi-annual service on the clubhouse and pool house condensers at Bradford Place is due May 4. We will keep it to a weekday since weekends are held for community events.\n\nReply with a day that works and we will confirm a time.\n\nThanks,\nKestrel Property Management',
         sentAt: '2026-04-24T13:30:00.000Z',
       },
       {
         channel: 'email',
         contactId: 'CONT-BRADFORD-1',
         recipient: 'sdelacroix@bradfordplacehoa.com',
-        subject: 'Re: BiAnnual PM for Bradford Place Townhomes',
-        body: "Hi Simone,\n\nQuick nudge — let us know a date and we'll lock it in.\n\n— Kestrel Property Management",
+        subject: 'Re: Semi-annual service at Bradford Place: what day works?',
+        body: 'Hi Simone,\n\nJust following up on the semi-annual service at Bradford Place, due May 4.\n\nReply with a day that works and we will get it scheduled.\n\nThanks,\nKestrel Property Management',
         sentAt: '2026-04-29T13:30:00.000Z',
       },
     ],
@@ -647,27 +647,27 @@ const JOBS: SeedJob[] = [
       {
         ts: '2026-04-24T13:30:01.000Z',
         level: 'success',
-        line: 'Email T-10 sent to sdelacroix@bradfordplacehoa.com.',
+        line: 'First reminder emailed to sdelacroix@bradfordplacehoa.com.',
       },
       {
         ts: '2026-04-29T13:30:00.000Z',
         level: 'info',
-        line: 'No reply after T-10. Sending T-5 follow-up…',
+        line: 'No reply to the first reminder. Sending a second.',
       },
-      { ts: '2026-04-29T13:30:01.000Z', level: 'success', line: 'Email T-5 sent.' },
+      { ts: '2026-04-29T13:30:01.000Z', level: 'success', line: 'Second reminder emailed.' },
     ],
     transitions: [
-      { from: null, to: 'Upcoming', reason: 'Ingested', at: '2026-04-24T13:00:00.000Z' },
+      { from: null, to: 'Upcoming', reason: 'Read in from AppFolio', at: '2026-04-24T13:00:00.000Z' },
       {
         from: 'Upcoming',
         to: 'InProgress_EmailT10_Sent',
-        reason: 'Email T-10 sent',
+        reason: 'First reminder emailed',
         at: '2026-04-24T13:30:01.000Z',
       },
       {
         from: 'InProgress_EmailT10_Sent',
         to: 'InProgress_EmailT5_Sent',
-        reason: 'No reply — escalated to T-5 email',
+        reason: 'No reply, so a second reminder went out',
         at: '2026-04-29T13:30:01.000Z',
       },
     ],
@@ -704,21 +704,21 @@ const JOBS: SeedJob[] = [
       },
     ],
     recurringServiceId: 'RS-OAKMONT-ANNUAL',
-    recurringServiceName: 'Annual PM',
+    recurringServiceName: 'Annual Service',
     cadence: 'annual',
     jobSummary:
-      'Annual PM — small residential building. Landline only, no email on file. Whoever answers the front desk can take the date.',
-    rseId: 'RSE-OAKMONT-2026-05',
+      'Annual Service — small residential building. Landline only, no email on file. Whoever answers the front desk can take the date.',
+    rseId: 'SMV-OAKMONT-2026-05',
     dueDate: '2026-05-01',
     agentState: 'AwaitingHuman_DateProposed',
-    appfolioStatus: 'Contacted',
+    appfolioStatus: 'Outreach sent',
     outreach: [
       {
         channel: 'voice',
         contactId: 'CONT-OAKMONT-1',
         recipient: '(919) 555-0390',
         body:
-          'IVR transcript:\n\n[Kestrel Property Management]: "This is a courtesy call from Kestrel Property Management about scheduled maintenance at your building. Press 1 to request a date. Press 2 to have a booking link emailed to you."\n\n[Contact pressed 1]\n\n[Kestrel Property Management]: "Please leave your preferred service date after the tone."\n\n[Contact]: "Next Tuesday after 1pm works, just need a couple hours notice so we can let the tech into the unit."\n\n[Call ended · 47 seconds]',
+          'Call recording:\n\n[Kestrel Property Management]: "This is a courtesy call from Kestrel Property Management about scheduled maintenance at your building. Press 1 to request a date. Press 2 to have a booking link emailed to you."\n\n[Contact pressed 1]\n\n[Kestrel Property Management]: "Please leave your preferred service date after the tone."\n\n[Contact]: "Next Tuesday after 1pm works, just need a couple hours notice so we can let the technician in."\n\n[Call ended · 47 seconds]',
         sentAt: '2026-04-30T11:00:00.000Z',
       },
     ],
@@ -727,7 +727,7 @@ const JOBS: SeedJob[] = [
         channel: 'voice-keypress',
         contactId: 'CONT-OAKMONT-1',
         fromAddress: '(919) 555-0390',
-        rawText: 'Next Tuesday after 1pm works, just need a couple hours notice so we can let the tech into the unit.',
+        rawText: 'Next Tuesday after 1pm works, just need a couple hours notice so we can let the technician in.',
         classification: 'proposed-date',
         parsedDate: '2026-05-05',
         llmConfidence: 0.91,
@@ -743,41 +743,41 @@ const JOBS: SeedJob[] = [
       {
         ts: '2026-04-21T13:30:02.000Z',
         level: 'info',
-        line: 'Email T-10 skipped — no email address. SMS T-5 skipped — landline. Routing direct to T-0 voice IVR.',
+        line: 'No email address on file and the number is a landline, so the agent placed a short automated call instead.',
       },
       {
         ts: '2026-04-30T11:00:00.000Z',
         level: 'info',
-        line: 'Placing voice IVR call to (919) 555-0390…',
+        line: 'Calling (919) 555-0390...',
       },
       {
         ts: '2026-04-30T11:00:12.000Z',
         level: 'success',
-        line: 'IVR keypress 1 detected — contact requested a date.',
+        line: 'They pressed 1 to give a date.',
       },
       {
         ts: '2026-04-30T11:00:45.000Z',
         level: 'success',
-        line: 'IVR transcript captured. Contact said "Next Tuesday after 1pm".',
+        line: 'Recording captured. They said "next Tuesday after 1pm".',
       },
       {
         ts: '2026-04-30T11:00:46.000Z',
         level: 'info',
-        line: 'SoTA extraction: 2026-05-05 (after 1pm).',
+        line: 'Date read from the reply: May 5, after 1pm.',
       },
     ],
     transitions: [
-      { from: null, to: 'Upcoming', reason: 'Ingested', at: '2026-04-21T13:00:00.000Z' },
+      { from: null, to: 'Upcoming', reason: 'Read in from AppFolio', at: '2026-04-21T13:00:00.000Z' },
       {
         from: 'Upcoming',
         to: 'InProgress_VoiceT0_Attempted',
-        reason: 'Landline-only — routed direct to voice IVR',
+        reason: 'Landline only, so the agent called instead of texting',
         at: '2026-04-30T11:00:00.000Z',
       },
       {
         from: 'InProgress_VoiceT0_Attempted',
         to: 'AwaitingHuman_DateProposed',
-        reason: 'IVR keypress + spoken date captured: 2026-05-05',
+        reason: 'Date captured on the call: May 5',
         at: '2026-04-30T11:00:46.000Z',
       },
     ],
@@ -814,21 +814,21 @@ const JOBS: SeedJob[] = [
       },
     ],
     recurringServiceId: 'RS-WESTGATE-QUARTERLY',
-    recurringServiceName: 'Quarterly PM',
+    recurringServiceName: 'Quarterly Service',
     cadence: 'quarterly',
     jobSummary:
-      'Quarterly PM — retail strip common area. No email on file; landline only. Ask for whoever is in the office.',
-    rseId: 'RSE-WESTGATE-2026-05',
+      'Quarterly Service — retail strip common area. No email on file; landline only. Ask for whoever is in the office.',
+    rseId: 'SMV-WESTGATE-2026-05',
     dueDate: '2026-05-01',
     agentState: 'InProgress_VoiceT0_Attempted',
-    appfolioStatus: 'Unreachable',
+    appfolioStatus: 'No response',
     outreach: [
       {
         channel: 'voice',
         contactId: 'CONT-WESTGATE-1',
         recipient: '(984) 555-0275',
         body:
-          'IVR script: "This is a courtesy call from Kestrel Property Management about scheduled maintenance at your building. Press 1 to request a date. Press 2 to have a booking link emailed to you." (No keypress detected — call ended after 28 seconds.)',
+          'Call script: "This is a courtesy call from Kestrel Property Management about scheduled maintenance at your building. Press 1 to request a date. Press 2 to have a booking link emailed to you." (No keypress detected — call ended after 28 seconds.)',
         sentAt: '2026-04-29T15:00:00.000Z',
       },
     ],
@@ -842,7 +842,7 @@ const JOBS: SeedJob[] = [
       {
         ts: '2026-04-21T13:30:02.000Z',
         level: 'info',
-        line: 'Email T-10 skipped — no email address. SMS T-5 skipped — landline. Routing direct to T-0 voice IVR.',
+        line: 'No email address on file and the number is a landline, so the agent placed a short automated call instead.',
       },
       {
         ts: '2026-04-29T15:00:00.000Z',
@@ -856,11 +856,11 @@ const JOBS: SeedJob[] = [
       },
     ],
     transitions: [
-      { from: null, to: 'Upcoming', reason: 'Ingested', at: '2026-04-21T13:00:00.000Z' },
+      { from: null, to: 'Upcoming', reason: 'Read in from AppFolio', at: '2026-04-21T13:00:00.000Z' },
       {
         from: 'Upcoming',
         to: 'InProgress_VoiceT0_Attempted',
-        reason: 'Landline-only — routed direct to voice IVR',
+        reason: 'Landline only, so the agent called instead of texting',
         at: '2026-04-29T15:00:01.000Z',
       },
     ],
@@ -869,9 +869,8 @@ const JOBS: SeedJob[] = [
   // ---- 9. AWAITING HUMAN · Date proposed (multi-contact, Beacon Ridge) ----
   {
     customerId: 'CUST-BEACON',
-    customerName: 'Beacon Ridge Community',
+    customerName: 'Beacon Ridge Condominiums',
     locationId: 'LOC-BEACON-MAIN',
-    locationName: 'Beacon Ridge Condominiums',
     city: 'Raleigh',
     state: 'NC',
     zip: '27612',
@@ -934,30 +933,30 @@ const JOBS: SeedJob[] = [
       },
     ],
     recurringServiceId: 'RS-BEACON-QUARTERLY',
-    recurringServiceName: 'Quarterly PM',
+    recurringServiceName: 'Quarterly Service',
     cadence: 'quarterly',
     jobSummary:
-      'Quarterly PM — multi-building community. 4+ units across the property. Coordinate with facilities team for after-hours building access.',
-    rseId: 'RSE-BEACON-2026-05',
+      'Quarterly service across a multi-building community. Four pieces of equipment. Facilities coordinates after-hours building access.',
+    rseId: 'SMV-BEACON-2026-05',
     dueDate: '2026-05-03',
     agentState: 'AwaitingHuman_DateProposed',
-    appfolioStatus: 'Contacted',
+    appfolioStatus: 'Outreach sent',
     outreach: [
       {
         channel: 'email',
         contactId: 'CONT-BEACON-FAC',
         recipient: 'owen.prescott@beaconridgehoa.com',
-        subject: 'Quarterly PM for Beacon Ridge Community — let us know what date works',
+        subject: 'Quarterly service at Beacon Ridge: what day works?',
         body:
-          'Hi Owen,\n\nYour Quarterly PM covering 4 units (Building C clubhouse, Building B boiler, Building A pool house, clubhouse water heater) is due around May 3. Reply with a date that works.\n\n— Kestrel Property Management',
+          'Hi Owen,\n\nQuarterly service at Beacon Ridge is due May 3. It covers four pieces of equipment: the Building C clubhouse rooftop unit, the Building B boiler, the Building A pool house heat pump, and the clubhouse water heater.\n\nReply with a day that works and we will confirm a time and an access plan for Building C.\n\nThanks,\nKestrel Property Management',
         sentAt: '2026-04-23T13:30:00.000Z',
       },
       {
         channel: 'email',
         contactId: 'CONT-BEACON-OFF',
         recipient: 'marla.quinn@beaconridgehoa.com',
-        subject: 'Quarterly PM for Beacon Ridge Community — let us know what date works',
-        body: 'Hi Marla,\n\nSame as above — looping in the community office.\n\n— Kestrel Property Management',
+        subject: 'Quarterly service at Beacon Ridge: what day works?',
+        body: 'Hi Marla,\n\nQuarterly service at Beacon Ridge is due May 3. It covers four pieces of equipment across Buildings A, B and C plus the clubhouse.\n\nWe have asked Owen Prescott in facilities as well. If it is easier for the community office to set the date, reply with a day that works and we will confirm a time.\n\nThanks,\nKestrel Property Management',
         sentAt: '2026-04-23T13:30:01.000Z',
       },
     ],
@@ -967,7 +966,7 @@ const JOBS: SeedJob[] = [
         contactId: 'CONT-BEACON-FAC',
         fromAddress: 'owen.prescott@beaconridgehoa.com',
         rawText:
-          "Tuesday May 5 in the afternoon works for me — after 1pm. Need to coordinate with the on-site team for Building C access so let me know what time you're starting.",
+          "Tuesday May 5 in the afternoon works for me, after 1pm. Need to coordinate with the on-site team for Building C access so let me know what time you're starting.",
         classification: 'proposed-date',
         parsedDate: '2026-05-05',
         llmConfidence: 0.92,
@@ -978,17 +977,17 @@ const JOBS: SeedJob[] = [
       {
         ts: '2026-04-21T13:00:00.000Z',
         level: 'info',
-        line: 'Adapter 1 enabled — fetched 3 contacts via /api/v2/properties/{id}/contacts.',
+        line: 'Three contacts found on the property record for Beacon Ridge.',
       },
       {
         ts: '2026-04-21T13:00:01.000Z',
         level: 'info',
-        line: 'Role-ranked contacts: Owen Prescott (Facilities, rank 5) → Marla Quinn (Office, 30) → Yvette Castellanos (Board President, 90, deprioritized).',
+        line: 'Best person to ask first: Owen Prescott in facilities, then the community office. The board president is a last resort.',
       },
       {
         ts: '2026-04-23T13:30:01.000Z',
         level: 'success',
-        line: 'Email T-10 fan-out: 2 emails sent (Owen + Marla).',
+        line: 'Emailed Owen Prescott and the community office.',
       },
       {
         ts: '2026-04-28T18:42:00.000Z',
@@ -998,7 +997,7 @@ const JOBS: SeedJob[] = [
       {
         ts: '2026-04-28T18:42:01.000Z',
         level: 'info',
-        line: 'Lightweight LLM classified reply as proposed-date. SoTA extraction: 2026-05-05 (after 1pm).',
+        line: 'Reply read as a proposed date. Date read from the reply: May 5, after 1pm.',
       },
       {
         ts: '2026-04-28T18:42:02.000Z',
@@ -1007,11 +1006,11 @@ const JOBS: SeedJob[] = [
       },
     ],
     transitions: [
-      { from: null, to: 'Upcoming', reason: 'Ingested', at: '2026-04-21T13:00:00.000Z' },
+      { from: null, to: 'Upcoming', reason: 'Read in from AppFolio', at: '2026-04-21T13:00:00.000Z' },
       {
         from: 'Upcoming',
         to: 'InProgress_EmailT10_Sent',
-        reason: 'Email T-10 fan-out',
+        reason: 'First reminder emailed to both contacts',
         at: '2026-04-23T13:30:01.000Z',
       },
       {
@@ -1060,21 +1059,21 @@ const JOBS: SeedJob[] = [
       },
     ],
     recurringServiceId: 'RS-MAGNOLIA-QUARTERLY',
-    recurringServiceName: 'Quarterly PM',
+    recurringServiceName: 'Quarterly Service',
     cadence: 'quarterly',
-    jobSummary: 'Quarterly PM — two residential buildings. Desmond owns the schedule.',
-    rseId: 'RSE-MAGNOLIA-2026-05',
+    jobSummary: 'Quarterly Service — two residential buildings. Desmond owns the schedule.',
+    rseId: 'SMV-MAGNOLIA-2026-05',
     dueDate: '2026-05-01',
     agentState: 'AwaitingHuman_DateProposed',
-    appfolioStatus: 'Contacted',
+    appfolioStatus: 'Outreach sent',
     outreach: [
       {
         channel: 'email',
         contactId: 'CONT-MAGNOLIA-1',
         recipient: 'dpryor@magnoliagroveapts.com',
-        subject: 'Quarterly PM for Magnolia Grove Apartments — let us know what date works',
+        subject: 'Quarterly service at Magnolia Grove: what day works?',
         body:
-          'Hi Desmond,\n\nYour Quarterly maintenance visit is due around May 1 (Buildings 1 and 2). Reply with a date.\n\n— Kestrel Property Management',
+          'Hi Desmond,\n\nQuarterly service at Magnolia Grove is due May 1, covering Buildings 1 and 2.\n\nReply with a day that works and we will confirm a time.\n\nThanks,\nKestrel Property Management',
         sentAt: '2026-04-21T13:30:00.000Z',
       },
     ],
@@ -1095,7 +1094,7 @@ const JOBS: SeedJob[] = [
       {
         ts: '2026-04-21T13:30:01.000Z',
         level: 'success',
-        line: 'Email T-10 sent to dpryor@magnoliagroveapts.com.',
+        line: 'First reminder emailed to dpryor@magnoliagroveapts.com.',
       },
       {
         ts: '2026-04-27T11:15:00.000Z',
@@ -1109,11 +1108,11 @@ const JOBS: SeedJob[] = [
       },
     ],
     transitions: [
-      { from: null, to: 'Upcoming', reason: 'Ingested', at: '2026-04-21T13:00:00.000Z' },
+      { from: null, to: 'Upcoming', reason: 'Read in from AppFolio', at: '2026-04-21T13:00:00.000Z' },
       {
         from: 'Upcoming',
         to: 'InProgress_EmailT10_Sent',
-        reason: 'Email T-10 sent',
+        reason: 'First reminder emailed',
         at: '2026-04-21T13:30:01.000Z',
       },
       {
@@ -1157,20 +1156,20 @@ const JOBS: SeedJob[] = [
       },
     ],
     recurringServiceId: 'RS-STONEBRIDGE-ANNUAL',
-    recurringServiceName: 'Annual PM',
+    recurringServiceName: 'Annual Service',
     cadence: 'annual',
-    jobSummary: 'Annual PM — executive suite. After-hours access preferred.',
-    rseId: 'RSE-STONEBRIDGE-2026-05',
+    jobSummary: 'Annual Service — executive suite. After-hours access preferred.',
+    rseId: 'SMV-STONEBRIDGE-2026-05',
     dueDate: '2026-05-04',
     agentState: 'AwaitingHuman_AmbiguousReply',
-    appfolioStatus: 'Contacted',
+    appfolioStatus: 'Outreach sent',
     outreach: [
       {
         channel: 'email',
         contactId: 'CONT-STONEBRIDGE-1',
         recipient: 'bsorrel@stonebridgeoffices.com',
-        subject: 'Annual PM for Stonebridge Offices',
-        body: 'Hi Bianca,\n\nAnnual maintenance visit due around May 4. After-hours window?\n\n— Kestrel Property Management',
+        subject: 'Annual service at Stonebridge Offices: what day works?',
+        body: 'Hi Bianca,\n\nAnnual service at Stonebridge Offices is due May 4.\n\nReply with a day that works. If you would rather we came outside office hours, say so and we will arrange an evening slot.\n\nThanks,\nKestrel Property Management',
         sentAt: '2026-04-24T13:30:00.000Z',
       },
     ],
@@ -1191,7 +1190,7 @@ const JOBS: SeedJob[] = [
       {
         ts: '2026-04-24T13:30:01.000Z',
         level: 'success',
-        line: 'Email T-10 sent to bsorrel@stonebridgeoffices.com.',
+        line: 'First reminder emailed to bsorrel@stonebridgeoffices.com.',
       },
       {
         ts: '2026-04-28T16:05:00.000Z',
@@ -1205,17 +1204,17 @@ const JOBS: SeedJob[] = [
       },
     ],
     transitions: [
-      { from: null, to: 'Upcoming', reason: 'Ingested', at: '2026-04-24T13:00:00.000Z' },
+      { from: null, to: 'Upcoming', reason: 'Read in from AppFolio', at: '2026-04-24T13:00:00.000Z' },
       {
         from: 'Upcoming',
         to: 'InProgress_EmailT10_Sent',
-        reason: 'Email T-10 sent',
+        reason: 'First reminder emailed',
         at: '2026-04-24T13:30:01.000Z',
       },
       {
         from: 'InProgress_EmailT10_Sent',
         to: 'AwaitingHuman_AmbiguousReply',
-        reason: 'Date intent unclear',
+        reason: 'Reply had no date the agent could act on',
         at: '2026-04-28T16:05:01.000Z',
       },
     ],
@@ -1253,20 +1252,20 @@ const JOBS: SeedJob[] = [
       },
     ],
     recurringServiceId: 'RS-PARKSIDE-BIANNUAL',
-    recurringServiceName: 'BiAnnual PM',
+    recurringServiceName: 'Semi-Annual Service',
     cadence: 'biannual',
-    jobSummary: 'BiAnnual PM — leasing office rooftop unit. Neil handles vendor scheduling.',
-    rseId: 'RSE-PARKSIDE-2026-05',
+    jobSummary: 'Semi-Annual Service — leasing office rooftop unit. Neil handles vendor scheduling.',
+    rseId: 'SMV-PARKSIDE-2026-05',
     dueDate: '2026-05-06',
     agentState: 'AwaitingHuman_Question',
-    appfolioStatus: 'Contacted',
+    appfolioStatus: 'Outreach sent',
     outreach: [
       {
         channel: 'email',
         contactId: 'CONT-PARKSIDE-1',
         recipient: 'nashby@parksideresidences.com',
-        subject: 'BiAnnual PM for Parkside Residences',
-        body: 'Hi Neil,\n\nBiAnnual maintenance visit due around May 6.\n\n— Kestrel Property Management',
+        subject: 'Semi-annual service at Parkside Residences: what day works?',
+        body: 'Hi Neil,\n\nSemi-annual service at Parkside Residences is due May 6.\n\nReply with a day that works and we will confirm a time with the technician.\n\nThanks,\nKestrel Property Management',
         sentAt: '2026-04-26T13:30:00.000Z',
       },
     ],
@@ -1276,7 +1275,7 @@ const JOBS: SeedJob[] = [
         contactId: 'CONT-PARKSIDE-1',
         fromAddress: 'nashby@parksideresidences.com',
         rawText:
-          'Hey — quick question before I schedule: is the BiAnnual covered under our management agreement, or billed separately to the association? Want to confirm before I loop in the board.',
+          'Hey — quick question before I schedule: is the Semi-Annual covered under our management agreement, or billed separately to the association? Want to confirm before I loop in the board.',
         classification: 'question',
         llmConfidence: 0.88,
         receivedAt: '2026-04-29T10:22:00.000Z',
@@ -1286,7 +1285,7 @@ const JOBS: SeedJob[] = [
       {
         ts: '2026-04-26T13:30:01.000Z',
         level: 'success',
-        line: 'Email T-10 sent to nashby@parksideresidences.com.',
+        line: 'First reminder emailed to nashby@parksideresidences.com.',
       },
       {
         ts: '2026-04-29T10:22:00.000Z',
@@ -1300,17 +1299,17 @@ const JOBS: SeedJob[] = [
       },
     ],
     transitions: [
-      { from: null, to: 'Upcoming', reason: 'Ingested', at: '2026-04-26T13:00:00.000Z' },
+      { from: null, to: 'Upcoming', reason: 'Read in from AppFolio', at: '2026-04-26T13:00:00.000Z' },
       {
         from: 'Upcoming',
         to: 'InProgress_EmailT10_Sent',
-        reason: 'Email T-10 sent',
+        reason: 'First reminder emailed',
         at: '2026-04-26T13:30:01.000Z',
       },
       {
         from: 'InProgress_EmailT10_Sent',
         to: 'AwaitingHuman_Question',
-        reason: 'Contact asked a question — FAQ deferred to Phase 2',
+        reason: 'Contact asked a question',
         at: '2026-04-29T10:22:01.000Z',
       },
     ],
@@ -1348,77 +1347,77 @@ const JOBS: SeedJob[] = [
       },
     ],
     recurringServiceId: 'RS-ASHFORD-ANNUAL',
-    recurringServiceName: 'Annual PM',
+    recurringServiceName: 'Annual Service',
     cadence: 'annual',
-    jobSummary: 'Annual PM — clubhouse rooftop unit. Talia handles operations.',
-    rseId: 'RSE-ASHFORD-2026-05',
+    jobSummary: 'Annual Service — clubhouse rooftop unit. Talia handles operations.',
+    rseId: 'SMV-ASHFORD-2026-05',
     dueDate: '2026-05-01',
     agentState: 'Escalated',
-    appfolioStatus: 'Unreachable',
+    appfolioStatus: 'No response',
     outreach: [
       {
         channel: 'email',
         contactId: 'CONT-ASHFORD-1',
         recipient: 'tokafor@ashfordplacecondos.com',
-        subject: 'Annual PM for Ashford Place Condos',
-        body: 'Hi Talia,\n\nAnnual maintenance visit due around May 1.\n\n— Kestrel Property Management',
+        subject: 'Annual service at Ashford Place: what day works?',
+        body: 'Hi Talia,\n\nAnnual service on the clubhouse rooftop unit at Ashford Place is due May 1.\n\nReply with a day that works and we will confirm a time.\n\nThanks,\nKestrel Property Management',
         sentAt: '2026-04-21T13:30:00.000Z',
       },
       {
         channel: 'email',
         contactId: 'CONT-ASHFORD-1',
         recipient: 'tokafor@ashfordplacecondos.com',
-        subject: 'Re: Annual PM for Ashford Place Condos',
-        body: "Hi Talia,\n\nFollowing up — let us know a day that works.\n\n— Kestrel Property Management",
+        subject: 'Re: Annual service at Ashford Place: what day works?',
+        body: 'Hi Talia,\n\nFollowing up on the annual service at Ashford Place, due May 1. We have not heard back yet.\n\nReply with any day that works and we will fit the technician around it.\n\nThanks,\nKestrel Property Management',
         sentAt: '2026-04-26T13:30:00.000Z',
       },
       {
         channel: 'voice',
         contactId: 'CONT-ASHFORD-1',
         recipient: '(984) 555-0691',
-        body: 'IVR script played. No keypress. Voicemail not engaged (ring-out).',
+        body: 'Automated call placed. Nobody answered and it did not reach voicemail.',
         sentAt: '2026-04-30T10:00:00.000Z',
       },
     ],
     replies: [],
     logs: [
-      { ts: '2026-04-21T13:30:01.000Z', level: 'success', line: 'Email T-10 sent.' },
-      { ts: '2026-04-26T13:30:01.000Z', level: 'success', line: 'Email T-5 sent.' },
+      { ts: '2026-04-21T13:30:01.000Z', level: 'success', line: 'First reminder emailed.' },
+      { ts: '2026-04-26T13:30:01.000Z', level: 'success', line: 'Second reminder emailed.' },
       {
         ts: '2026-04-30T10:00:00.000Z',
         level: 'info',
-        line: 'Placing voice IVR call to (984) 555-0691…',
+        line: 'Calling (984) 555-0691...',
       },
       {
         ts: '2026-04-30T10:00:30.000Z',
         level: 'warn',
-        line: 'Call ended without keypress. All channels exhausted — escalating to Coordinator.',
+        line: 'Call ended with no answer. No reply by email, text or phone, so this is going to the coordinator.',
       },
     ],
     transitions: [
-      { from: null, to: 'Upcoming', reason: 'Ingested', at: '2026-04-21T13:00:00.000Z' },
+      { from: null, to: 'Upcoming', reason: 'Read in from AppFolio', at: '2026-04-21T13:00:00.000Z' },
       {
         from: 'Upcoming',
         to: 'InProgress_EmailT10_Sent',
-        reason: 'Email T-10 sent',
+        reason: 'First reminder emailed',
         at: '2026-04-21T13:30:01.000Z',
       },
       {
         from: 'InProgress_EmailT10_Sent',
         to: 'InProgress_EmailT5_Sent',
-        reason: 'No reply',
+        reason: 'No reply yet',
         at: '2026-04-26T13:30:01.000Z',
       },
       {
         from: 'InProgress_EmailT5_Sent',
         to: 'InProgress_VoiceT0_Attempted',
-        reason: 'No reply',
+        reason: 'No reply yet',
         at: '2026-04-30T10:00:01.000Z',
       },
       {
         from: 'InProgress_VoiceT0_Attempted',
         to: 'Escalated',
-        reason: 'All channels exhausted',
+        reason: 'No reply by email, text or phone',
         at: '2026-04-30T10:00:30.000Z',
       },
     ],
@@ -1457,10 +1456,10 @@ const JOBS: SeedJob[] = [
       },
     ],
     recurringServiceId: 'RS-RIVERSIDE-ANNUAL',
-    recurringServiceName: 'Annual PM',
+    recurringServiceName: 'Annual Service',
     cadence: 'annual',
-    jobSummary: 'Annual PM — community center HVAC.',
-    rseId: 'RSE-RIVERSIDE-2026-05',
+    jobSummary: 'Annual Service — community center HVAC.',
+    rseId: 'SMV-RIVERSIDE-2026-05',
     dueDate: '2026-05-01',
     agentState: 'Closed_Booked',
     appfolioStatus: 'Booked',
@@ -1469,8 +1468,8 @@ const JOBS: SeedJob[] = [
         channel: 'email',
         contactId: 'CONT-RIVERSIDE-1',
         recipient: 'evargas@riversidecommons.com',
-        subject: 'Annual PM for Riverside Commons',
-        body: 'Hi Emilio,\n\nAnnual maintenance visit due around May 1.\n\n— Kestrel Property Management',
+        subject: 'Annual service at Riverside Commons: what day works?',
+        body: 'Hi Emilio,\n\nAnnual service at Riverside Commons is due May 1.\n\nReply with a day that works and we will confirm a time.\n\nThanks,\nKestrel Property Management',
         sentAt: '2026-04-21T13:30:00.000Z',
       },
     ],
@@ -1487,7 +1486,7 @@ const JOBS: SeedJob[] = [
       },
     ],
     logs: [
-      { ts: '2026-04-21T13:30:01.000Z', level: 'success', line: 'Email T-10 sent.' },
+      { ts: '2026-04-21T13:30:01.000Z', level: 'success', line: 'First reminder emailed.' },
       {
         ts: '2026-04-25T09:18:00.000Z',
         level: 'success',
@@ -1500,11 +1499,11 @@ const JOBS: SeedJob[] = [
       },
     ],
     transitions: [
-      { from: null, to: 'Upcoming', reason: 'Ingested', at: '2026-04-21T13:00:00.000Z' },
+      { from: null, to: 'Upcoming', reason: 'Read in from AppFolio', at: '2026-04-21T13:00:00.000Z' },
       {
         from: 'Upcoming',
         to: 'InProgress_EmailT10_Sent',
-        reason: 'Email T-10 sent',
+        reason: 'First reminder emailed',
         at: '2026-04-21T13:30:01.000Z',
       },
       {
@@ -1554,20 +1553,20 @@ const JOBS: SeedJob[] = [
       },
     ],
     recurringServiceId: 'RS-BROOKHAVEN-MONTHLY',
-    recurringServiceName: 'Monthly PM',
+    recurringServiceName: 'Monthly Service',
     cadence: 'monthly',
-    jobSummary: 'Monthly PM — small residential building.',
-    rseId: 'RSE-BROOKHAVEN-2026-05',
+    jobSummary: 'Monthly Service — small residential building.',
+    rseId: 'SMV-BROOKHAVEN-2026-05',
     dueDate: '2026-05-01',
     agentState: 'Closed_OptedOut',
-    appfolioStatus: 'Not Attempted',
+    appfolioStatus: 'Not contacted yet',
     outreach: [
       {
         channel: 'email',
         contactId: 'CONT-BROOKHAVEN-1',
         recipient: 'priscilla@brookhavenflats.com',
-        subject: 'Monthly PM for Brookhaven Flats',
-        body: 'Hi Priscilla,\n\nMonthly maintenance visit due around May 1.\n\n— Kestrel Property Management',
+        subject: 'Monthly service at Brookhaven Flats: what day works?',
+        body: 'Hi Priscilla,\n\nMonthly service at Brookhaven Flats is due May 1.\n\nReply with a day that works and we will confirm a time.\n\nThanks,\nKestrel Property Management',
         sentAt: '2026-04-21T13:30:00.000Z',
       },
     ],
@@ -1584,7 +1583,7 @@ const JOBS: SeedJob[] = [
       },
     ],
     logs: [
-      { ts: '2026-04-21T13:30:01.000Z', level: 'success', line: 'Email T-10 sent.' },
+      { ts: '2026-04-21T13:30:01.000Z', level: 'success', line: 'First reminder emailed.' },
       {
         ts: '2026-04-24T17:32:00.000Z',
         level: 'success',
@@ -1597,11 +1596,11 @@ const JOBS: SeedJob[] = [
       },
     ],
     transitions: [
-      { from: null, to: 'Upcoming', reason: 'Ingested', at: '2026-04-21T13:00:00.000Z' },
+      { from: null, to: 'Upcoming', reason: 'Read in from AppFolio', at: '2026-04-21T13:00:00.000Z' },
       {
         from: 'Upcoming',
         to: 'InProgress_EmailT10_Sent',
-        reason: 'Email T-10 sent',
+        reason: 'First reminder emailed',
         at: '2026-04-21T13:30:01.000Z',
       },
       {
@@ -1650,7 +1649,7 @@ export function runSeed() {
     `)
     const insRse = db.prepare(`
       INSERT INTO recurring_service_events (id, recurring_service_id, due_date, state, ingested_at_iso, ingested_via_adapter, appfolio_status, booking_availability)
-      VALUES (?, ?, ?, ?, ?, 'adapter2a', ?, 'Not Bookable')
+      VALUES (?, ?, ?, ?, ?, 'adapter2a', ?, 'Not yet scheduled')
     `)
     const insOutreach = db.prepare(`
       INSERT INTO outreach_attempts (rse_id, channel, contact_id, recipient, subject, body_text, sent_at_demo_clock, intercepted)
@@ -1689,7 +1688,7 @@ export function runSeed() {
         j.state,
         j.zip,
         j.serviceZone,
-        'PM',
+        'Scheduled Maintenance',
       )
       for (const c of j.contacts) {
         insContact.run(

@@ -32,23 +32,23 @@ interface InboxProps {
 }
 
 const ADAPTER_LABEL: Record<string, string> = {
-  adapter1: 'API (Adapter 1)',
-  adapter2a: 'Scheduled XLSX (Adapter 2A)',
-  adapter2b_full: 'Coordinator export — full cols (Adapter 2B)',
-  adapter2b_degraded: 'Coordinator export — degraded (Adapter 2B)',
+  adapter1: 'Direct connection',
+  adapter2a: 'Automatic weekly report',
+  adapter2b_full: 'Manual weekly export',
+  adapter2b_degraded: 'Manual weekly export — no contact columns',
 }
 
 export const inboxPage = (p: InboxProps) =>
   layout({
-    title: 'Coordinator inbox · Kestrel PM Booking Agent',
+    title: 'Coordinator inbox · Kestrel Maintenance Scheduling Agent',
     tourStep: p.tourStep,
     currentPath: '/inbox',
     body: html`
-      <div class="max-w-7xl mx-auto px-6 py-8">
+      <div class="max-w-7xl mx-auto px-6 py-8" data-job-count="${p.jobs.length}">
         ${inboxHeader(p)}
         ${tickToast(p)}
         ${timeTravelControl(p.demoClockIso)}
-        ${laneList(p.jobs, new Set(p.flashedRseIds ?? []))}
+        ${laneList(p.jobs, new Set(p.flashedRseIds ?? []), p.demoClockIso)}
       </div>
     `,
   })
@@ -68,8 +68,8 @@ const tickToast = (p: InboxProps) => {
           <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
         </svg>
         <div>
-          Clock rewound ${dayLabel}. <strong>Backward time-travel doesn't re-run the scheduler</strong> — prior state stays as-is. Use
-          <span class="font-medium">Restart demo</span> to return to canonical state.
+          Moved back ${dayLabel}. <strong>Going back doesn't undo what already happened</strong>, so jobs stay where they are. Use
+          <span class="font-medium">Restart demo</span> for a clean slate.
         </div>
       </div>
     `
@@ -100,9 +100,9 @@ const tickToast = (p: InboxProps) => {
         <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
       </svg>
       <div>
-        Advanced ${dayLabel} · <strong>no state changes at this clock.</strong>
-        The next T-marks fire at <span class="font-medium">T+1</span> (mobile-only escalations) and
-        <span class="font-medium">June PMs</span> (Maplewood / Northgate / Harbor Point T-10).
+        Advanced ${dayLabel} · <strong>nothing moved at this date.</strong>
+        Keep dragging — the next visits to start their reminders are Maplewood,
+        Northgate and Harbor Point in June.
       </div>
     </div>
   `
@@ -115,9 +115,7 @@ const inboxHeader = (p: InboxProps) => {
       <div>
         <h1 class="font-black text-ink text-3xl tracking-tight">Coordinator inbox</h1>
         <p class="text-ink-fade mt-1">
-          ${p.jobs.length} recurring maintenance jobs across
-          ${STATE_LANE_ORDER.filter((l) => (counts[l] ?? 0) > 0).length} lanes.
-          Awaiting Human is at the top — that's where your attention is needed.
+          ${p.jobs.length} maintenance visits. Anything needing your attention is at the top.
         </p>
         <div class="flex flex-wrap gap-2 mt-3">
           ${v2Chip('predict-score', 'Predictive booking-likelihood')}
@@ -127,7 +125,7 @@ const inboxHeader = (p: InboxProps) => {
       <div class="flex items-center gap-2 flex-wrap">
         <span
           class="inline-flex items-center gap-2 rounded-md border border-canvas-deep bg-white px-3 py-1.5 text-xs text-ink"
-          title="Demo clock — slider lives in M6"
+          title="The date the demo is currently set to"
         >
           <svg
             class="w-3.5 h-3.5 text-ink-muted"
@@ -148,7 +146,7 @@ const inboxHeader = (p: InboxProps) => {
         </span>
         <span
           class="inline-flex items-center gap-2 rounded-md border border-canvas-deep bg-white px-3 py-1.5 text-xs"
-          title="AppFolio ingest adapter — toggle in admin"
+          title="Where the agent is reading your schedule from. Change it in admin."
         >
           <span class="text-ink-muted">Ingest</span>
           <span class="font-mono text-ink">${ADAPTER_LABEL[p.ingestAdapter] ?? p.ingestAdapter}</span>
@@ -158,13 +156,13 @@ const inboxHeader = (p: InboxProps) => {
             ? 'border-emerald-300 bg-emerald-50 text-emerald-800'
             : 'border-canvas-deep bg-white text-ink-muted'} px-3 py-1.5 text-xs"
           title="${p.smsOutboundEnabled
-            ? 'Phase 1.5: outbound SMS active'
-            : 'Phase 1: outbound SMS dark until A2P 10DLC clears'}"
+            ? 'The agent is sending texts'
+            : 'Texting switches on once carrier registration clears'}"
         >
           <span class="w-1.5 h-1.5 rounded-full ${p.smsOutboundEnabled
             ? 'bg-emerald-500'
             : 'bg-ink-muted/40'}"></span>
-          SMS outbound ${p.smsOutboundEnabled ? 'live' : 'dark · pending 10DLC'}
+          Texting ${p.smsOutboundEnabled ? 'on' : 'not on yet'}
         </span>
       </div>
     </div>
@@ -179,18 +177,18 @@ const timeTravelControl = (clockIso: string) => {
     <section
       data-tour-highlight="time-travel"
       class="rounded-lg border border-canvas-deep bg-white p-4 mb-6"
-      aria-label="Time-travel demo control"
+      aria-label="Demo date control"
     >
       <div class="flex items-start justify-between mb-2 flex-wrap gap-3">
         <div class="min-w-0">
           <div class="flex items-baseline gap-2 flex-wrap">
             <span class="text-[11px] uppercase tracking-wider text-ink-muted font-bold">
-              Time-travel · demo clock
+              Move the date forward
             </span>
           </div>
           <p class="text-sm text-ink-fade mt-1 leading-snug max-w-xl">
-            Drag to advance the demo clock. The agent works in fast-forward —
-            outreach fires, replies arrive, 10 days compress into a minute.
+            Drag to move the date forward. Ten days of reminders and replies
+            compress into a few seconds.
           </p>
         </div>
         <form method="POST" action="/demo/_reset-seed" class="inline-flex">
@@ -220,7 +218,7 @@ const timeTravelControl = (clockIso: string) => {
           oninput="document.getElementById('clock-readout').textContent = (function(){
             const anchor = new Date('2026-04-15T09:00:00Z');
             anchor.setUTCDate(anchor.getUTCDate() + parseInt(this.value, 10));
-            return anchor.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+            return anchor.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', timeZone: 'UTC' });
           }).call(this)"
         />
         <noscript>
@@ -251,7 +249,7 @@ const timeTravelControl = (clockIso: string) => {
           <span id="clock-readout" class="font-mono text-ink ml-1">${formatClockShort(clockIso)}</span>
         </span>
         <span class="text-[11px] italic">
-          Backward time-travel → use Restart demo (deterministic seed).
+          To go back, use Restart demo.
         </span>
       </div>
     </section>
@@ -267,7 +265,7 @@ const countByLane = (jobs: JobQueueRow[]): Partial<Record<StateLane, number>> =>
   return out
 }
 
-const laneList = (jobs: JobQueueRow[], flashedSet: Set<string>) => {
+const laneList = (jobs: JobQueueRow[], flashedSet: Set<string>, demoClockIso: string) => {
   const grouped = STATE_LANE_ORDER.map((lane) => ({
     lane,
     jobs: jobs.filter((j) => STATE_META[j.state].lane === lane),
@@ -283,7 +281,7 @@ const laneList = (jobs: JobQueueRow[], flashedSet: Set<string>) => {
               </h2>
               <span class="text-ink-muted text-sm">${g.jobs.length} job${g.jobs.length === 1 ? '' : 's'}</span>
             </div>
-            <div class="grid lg:grid-cols-2 gap-3">${g.jobs.map((j) => jobCard(j, flashedSet.has(j.rse_id)))}</div>
+            <div class="grid lg:grid-cols-2 gap-3">${g.jobs.map((j) => jobCard(j, flashedSet.has(j.rse_id), demoClockIso))}</div>
           </section>
         `,
       )}
@@ -291,7 +289,7 @@ const laneList = (jobs: JobQueueRow[], flashedSet: Set<string>) => {
   `
 }
 
-const jobCard = (j: JobQueueRow, justFlashed: boolean) => {
+const jobCard = (j: JobQueueRow, justFlashed: boolean, demoClockIso: string) => {
   const meta = STATE_META[j.state]
   return html`
     <a
@@ -305,7 +303,7 @@ const jobCard = (j: JobQueueRow, justFlashed: boolean) => {
           </h3>
           <p class="text-xs text-ink-muted mt-0.5 truncate">
             ${j.recurring_service_name} ·
-            ${j.equipment_count} unit${j.equipment_count === 1 ? '' : 's'} ·
+            ${j.equipment_count} asset${j.equipment_count === 1 ? '' : 's'} ·
             ${j.location_city}, ${j.location_state}
           </p>
         </div>
@@ -327,7 +325,7 @@ const jobCard = (j: JobQueueRow, justFlashed: boolean) => {
 
       <div class="flex items-center justify-between text-[11px] text-ink-muted mt-2">
         <span class="font-mono">${j.rse_id}</span>
-        <span>${formatDueDate(j.due_date)}</span>
+        <span>${formatDueDate(j.due_date, demoClockIso)}</span>
       </div>
 
       ${meta.cta
@@ -351,7 +349,7 @@ const jobCard = (j: JobQueueRow, justFlashed: boolean) => {
             <div class="mt-2 pt-2 border-t border-canvas-deep text-[11px] text-ink-muted flex items-center justify-between">
               <span>${j.outreach_count} outreach · ${j.reply_count} repl${j.reply_count === 1 ? 'y' : 'ies'}</span>
               ${j.last_activity_iso
-                ? html`<span>updated ${formatRelative(j.last_activity_iso)}</span>`
+                ? html`<span>updated ${formatRelative(j.last_activity_iso, demoClockIso)}</span>`
                 : ''}
             </div>
           `}
@@ -369,5 +367,6 @@ const formatClockShort = (iso: string) => {
     hour: 'numeric',
     minute: '2-digit',
     hour12: true,
+    timeZone: 'UTC',
   })
 }

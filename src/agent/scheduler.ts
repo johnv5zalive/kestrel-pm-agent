@@ -104,14 +104,14 @@ function processJob(
       transition(
         job.rse_id,
         'InProgress_EmailT10_Sent',
-        'Email T-10 sent',
+        'First reminder emailed',
         clockIso,
       )
       result.transitions.push({
         rse_id: job.rse_id,
         from: curState,
         to: 'InProgress_EmailT10_Sent',
-        reason: 'Email T-10 sent',
+        reason: 'First reminder emailed',
       })
       curState = 'InProgress_EmailT10_Sent'
     }
@@ -122,12 +122,12 @@ function processJob(
     if (smsEnabled && job.primary_line_type === 'mobile' && job.primary_phone) {
       if (preSendCheck(job, adapter, clockIso, 'sms', result)) {
         sendSms(job, clockIso, 'T-5', result)
-        transition(job.rse_id, 'InProgress_SmsT5_Sent', 'SMS T-5 sent', clockIso)
+        transition(job.rse_id, 'InProgress_SmsT5_Sent', 'Follow-up text sent', clockIso)
         result.transitions.push({
           rse_id: job.rse_id,
           from: curState,
           to: 'InProgress_SmsT5_Sent',
-          reason: 'SMS T-5 sent',
+          reason: 'Follow-up text sent',
         })
         curState = 'InProgress_SmsT5_Sent'
       }
@@ -137,14 +137,14 @@ function processJob(
         transition(
           job.rse_id,
           'InProgress_EmailT5_Sent',
-          'Email T-5 sent',
+          'Second reminder emailed',
           clockIso,
         )
         result.transitions.push({
           rse_id: job.rse_id,
           from: curState,
           to: 'InProgress_EmailT5_Sent',
-          reason: 'Email T-5 sent',
+          reason: 'Second reminder emailed',
         })
         curState = 'InProgress_EmailT5_Sent'
       }
@@ -162,14 +162,14 @@ function processJob(
       transition(
         job.rse_id,
         'InProgress_VoiceT0_Attempted',
-        'Voice IVR T-0 attempted',
+        'Automated call placed',
         clockIso,
       )
       result.transitions.push({
         rse_id: job.rse_id,
         from: curState,
         to: 'InProgress_VoiceT0_Attempted',
-        reason: 'Voice IVR T-0 attempted',
+        reason: 'Automated call placed',
       })
       curState = 'InProgress_VoiceT0_Attempted'
     }
@@ -185,16 +185,16 @@ function processJob(
     appendLog(
       job.rse_id,
       'warn',
-      'All channels exhausted with no reply — escalating to Coordinator.',
+      'No reply by email, text or phone. Passing this to the coordinator.',
       clockIso,
     )
     result.logs_inserted += 1
-    transition(job.rse_id, 'Escalated', 'All channels exhausted', clockIso)
+    transition(job.rse_id, 'Escalated', 'No reply by email, text or phone', clockIso)
     result.transitions.push({
       rse_id: job.rse_id,
       from: curState,
       to: 'Escalated',
-      reason: 'All channels exhausted',
+      reason: 'No reply by email, text or phone',
     })
     curState = 'Escalated'
   }
@@ -212,13 +212,13 @@ function preSendCheck(
   appendLog(
     job.rse_id,
     'info',
-    `Pre-send check (Adapter 1): GET /api/v2/recurring-service-events/${job.rse_id} …`,
+    'Checking AppFolio in case this visit was already booked...',
     clockIso,
   )
   appendLog(
     job.rse_id,
     'success',
-    `Verified booking still active in AppFolio — proceeding with ${channel} send.`,
+    `Still unbooked in AppFolio. Sending the ${channel}.`,
     clockIso,
   )
   result.logs_inserted += 2
@@ -232,13 +232,15 @@ function sendEmail(
   result: TickResult,
 ) {
   const recipient = job.primary_email!
-  const subject = `${job.recurring_service_name} for ${job.customer_name} — ${
-    marker === 'T-10' ? 'let us know what date works' : 'quick follow-up'
-  }`
+  const service = job.recurring_service_name.toLowerCase()
+  const subject = `${
+    marker === 'T-10' ? '' : 'Re: '
+  }${job.recurring_service_name} at ${job.customer_name}: what day works?`
+  const greeting = `Hi ${job.primary_contact_name ?? 'there'},`
   const body =
     marker === 'T-10'
-      ? `Hi ${job.primary_contact_name ?? 'there'},\n\nYour next ${job.recurring_service_name} maintenance visit is coming up around ${formatDay(job.due_date)}. Reply with a date that works, or use kestrelpm.com/request-service.\n\n— Kestrel Property Management`
-      : `Hi ${job.primary_contact_name ?? 'there'},\n\nFollowing up on the ${job.recurring_service_name}. Just need a date and we'll lock it in.\n\n— Kestrel Property Management`
+      ? `${greeting}\n\n${capitalize(service)} at ${job.customer_name} is due ${formatDay(job.due_date)}.\n\nReply with a day that works and we will confirm a time with the technician.\n\nThanks,\nKestrel Property Management`
+      : `${greeting}\n\nFollowing up on the ${service} at ${job.customer_name}, due ${formatDay(job.due_date)}. We have not heard back yet.\n\nReply with any day that works and we will fit the technician around it.\n\nThanks,\nKestrel Property Management`
   db.prepare(
     `INSERT INTO outreach_attempts (rse_id, channel, contact_id, recipient, subject, body_text, sent_at_demo_clock, intercepted)
      VALUES (?, 'email', ?, ?, ?, ?, ?, 1)`,
@@ -253,7 +255,7 @@ function sendEmail(
   appendLog(
     job.rse_id,
     'success',
-    `Email ${marker} sent to ${recipient} (intercepted in demo).`,
+    `Email sent to ${recipient}.`,
     clockIso,
   )
   result.outreach_inserted += 1
@@ -267,7 +269,8 @@ function sendSms(
   result: TickResult,
 ) {
   const recipient = job.primary_phone!
-  const body = `Kestrel Property Management: ${job.recurring_service_name} due around ${formatDay(job.due_date)}. Reply with a date or visit kestrelpm.com/request-service.`
+  // A2P 10DLC requires opt-out language on every outbound template.
+  const body = `Kestrel Property Management: ${job.recurring_service_name.toLowerCase()} at ${job.customer_name} is due ${formatDay(job.due_date)}. Reply with a day that works and we will confirm a time. Reply STOP to opt out.`
   db.prepare(
     `INSERT INTO outreach_attempts (rse_id, channel, contact_id, recipient, subject, body_text, sent_at_demo_clock, intercepted)
      VALUES (?, 'sms', ?, ?, NULL, ?, ?, 1)`,
@@ -275,7 +278,7 @@ function sendSms(
   appendLog(
     job.rse_id,
     'success',
-    `SMS ${marker} sent to ${recipient} (intercepted in demo).`,
+    `Text sent to ${recipient}.`,
     clockIso,
   )
   result.outreach_inserted += 1
@@ -318,5 +321,10 @@ function formatDay(iso: string) {
     weekday: 'long',
     month: 'long',
     day: 'numeric',
+    timeZone: 'UTC',
   })
+}
+
+function capitalize(s: string): string {
+  return s.charAt(0).toUpperCase() + s.slice(1)
 }

@@ -65,7 +65,7 @@ export const interceptBanner = (
         d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z"
       />
     </svg>
-    <span><strong>Demo intercept active.</strong> ${description}</span>
+    <span>${description}</span>
   </div>
 `
 
@@ -121,12 +121,23 @@ export const formatDate = (iso: string): string => {
     month: 'short',
     day: 'numeric',
     year: 'numeric',
+    timeZone: 'UTC',
   })
 }
 
-export const formatRelative = (iso: string, nowIso?: string): string => {
+/**
+ * Relative time, always measured against the demo clock.
+ *
+ * `nowIso` is deliberately required. An earlier version defaulted to
+ * Date.now(), which meant the inbox list measured against real wall-clock
+ * time while the detail page measured against the demo clock — the same job
+ * read "91d ago" in one place and "22d ago" in the other, and the gap widened
+ * every day the demo sat unused. Keeping this argument mandatory makes that
+ * class of bug a compile error rather than a slow drift.
+ */
+export const formatRelative = (iso: string, nowIso: string): string => {
   const t = new Date(iso).getTime()
-  const now = nowIso ? new Date(nowIso).getTime() : Date.now()
+  const now = new Date(nowIso).getTime()
   const diffMs = now - t
   const day = 1000 * 60 * 60 * 24
   const hour = 1000 * 60 * 60
@@ -135,17 +146,23 @@ export const formatRelative = (iso: string, nowIso?: string): string => {
   if (diffMs < hour) return `${Math.floor(diffMs / min)}m ago`
   if (diffMs < day) return `${Math.floor(diffMs / hour)}h ago`
   if (diffMs < day * 7) return `${Math.floor(diffMs / day)}d ago`
-  return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+  return new Date(iso).toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    timeZone: 'UTC',
+  })
 }
 
-export const formatDueDate = (isoDate: string, nowIso?: string): string => {
+/** Due-date phrasing, always measured against the demo clock. See formatRelative. */
+export const formatDueDate = (isoDate: string, nowIso: string): string => {
   const due = new Date(isoDate).getTime()
-  const now = nowIso ? new Date(nowIso).getTime() : Date.now()
+  const now = new Date(nowIso).getTime()
   const day = 1000 * 60 * 60 * 24
   const diffDays = Math.round((due - now) / day)
   const formatted = new Date(isoDate).toLocaleDateString('en-US', {
     month: 'short',
     day: 'numeric',
+    timeZone: 'UTC',
   })
   if (diffDays === 0) return `due today (${formatted})`
   if (diffDays === 1) return `due tomorrow (${formatted})`

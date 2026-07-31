@@ -13,79 +13,91 @@
 //   - Bubble fades in only after rect stabilizes — no flicker into stale position
 
 (function () {
+  // Step copy rules: one idea per step, no internal vocabulary, no forward
+  // references to things that are not on screen, plain declarative sentences.
+  // {{jobCount}} is substituted from the inbox's data-job-count attribute so
+  // the tour can never disagree with the data (it used to say "15" against 16).
   const STEPS = [
     {
       n: 1,
       url: '/inbox',
       anchor: '[data-tour-highlight="lane-awaiting"]',
       side: 'top',
-      title: 'Step 1 of 8 · Coordinator inbox',
-      body: "These are the 15 PM jobs the agent is working on. Each card shows where the agent stands in its outreach sequence. Awaiting Human, at the top, is where the Coordinator needs to step in.",
+      title: 'Step 1 of 8 · The queue',
+      body: 'These are the {{jobCount}} maintenance visits coming up. The agent is chasing a date for each one. The ones at the top are waiting on you.',
     },
     {
       n: 2,
-      url: '/inbox/RSE-BEACON-2026-05',
+      url: '/inbox/SMV-BEACON-2026-05',
       anchor: '[data-tour-highlight="conversation-thread"]',
       side: 'right',
-      title: 'Step 2 of 8 · Multi-contact case',
-      body: "Beacon Ridge Condominiums — 3 contacts at three role-ranks. Adapter 1 fan-out emailed Owen (Facilities, top-ranked). He replied with a date; outreach to the others stopped.",
+      title: 'Step 2 of 8 · One property, several contacts',
+      body: 'Beacon Ridge has three people on file. The agent emailed the facilities director first because he is the best person to ask. He came back with a date, so the other two were never contacted.',
     },
     {
       n: 3,
-      url: '/inbox/RSE-BEACON-2026-05',
+      url: '/inbox/SMV-BEACON-2026-05',
       anchor: '[data-tour-highlight="reply-extraction"]',
       side: 'left',
-      title: 'Step 3 of 8 · Real LLM extraction',
-      body: 'Lightweight tier classified the reply. SoTA tier extracted the proposed date and time window. Confidence under 60% routes to Awaiting-Human · ambiguous reply automatically.',
+      title: 'Step 3 of 8 · Reading the reply',
+      body: 'The agent reads the reply and pulls out the date and time window. When it is not confident enough, it does not guess. It puts the job in front of you instead.',
     },
     {
       n: 4,
-      url: '/inbox/RSE-BEACON-2026-05',
+      url: '/inbox/SMV-BEACON-2026-05',
       anchor: '[data-tour-highlight="cta-book"]',
       side: 'bottom',
-      title: 'Step 4 of 8 · Coordinator confirms',
-      body: 'Click Confirm to mark booked. V1 stops here — the Coordinator books the Work Order in AppFolio themselves. Auto-book lives in the v2 chip below.',
+      title: 'Step 4 of 8 · You confirm',
+      body: 'One click marks it booked. The agent stops short of booking it in AppFolio for you, so a wrong date never reaches a calendar without a person seeing it first.',
     },
     {
       n: 5,
       url: '/inbox',
       anchor: '[data-tour-highlight="time-travel"]',
       side: 'bottom',
-      title: 'Step 5 of 8 · Time-travel',
-      body: 'Drag the slider to compress the 10-day outreach cycle into a minute. Watch the agent fire emails, capture replies, and escalate to voice IVR — all in fast-forward. Try dragging it after this step.',
+      title: 'Step 5 of 8 · Watch it run',
+      body: 'Drag this to move the date forward. Reminders go out, replies come back, and jobs move between the groups above. Try it after this step.',
     },
     {
       n: 6,
       url: '/admin',
       anchor: '[data-tour-highlight="adapter-section"]',
       side: 'right',
-      title: 'Step 6 of 8 · Three AppFolio paths',
-      body: "Adapter 1 (API), 2A (scheduled XLSX), 2B (Coordinator manual export). Switch to preview each tier — the rest of the agent behaves identically.",
+      title: 'Step 6 of 8 · Getting your schedule in',
+      body: 'Four ways in, depending on what your AppFolio plan allows. Only the first needs an API. Whichever you pick, the rest of the agent works the same.',
     },
     {
       n: 7,
       url: '/admin',
       anchor: '[data-tour-highlight="connect-real"]',
       side: 'top',
-      title: 'Step 7 of 8 · Connect real systems',
-      body: 'Production cutover wizards for AppFolio, Google Workspace, and Twilio. Inputs are disabled in demo — real paste happens in Railway Variables.',
+      title: 'Step 7 of 8 · Going live',
+      body: 'This is what setup looks like on your own accounts. The fields are switched off here because this is sample data.',
     },
     {
       n: 8,
       url: '/inbox',
       anchor: null, // no highlight on final step
       side: 'center',
-      title: 'Step 8 of 8 · End of tour',
-      body: "That's the agent end-to-end. Click Finish to drop into the inbox and explore on your own — replay the tour anytime from the header link.",
+      title: 'Step 8 of 8 · That is the whole thing',
+      body: 'Click Finish to go back to the queue and click around. You can replay this walkthrough any time from the link in the header.',
     },
   ]
+
+  // Fill {{jobCount}} from the page rather than hardcoding it.
+  function renderBody(text) {
+    return text.replace(/\{\{jobCount\}\}/g, function () {
+      const host = document.querySelector('[data-job-count]')
+      return host ? host.getAttribute('data-job-count') : 'the'
+    })
+  }
 
   function getQuery(name) {
     return new URLSearchParams(location.search).get(name)
   }
 
   function urlMatches(stepUrl, currentPath) {
-    // Exact match only. /inbox should NOT match /inbox/RSE-… — those are
+    // Exact match only. /inbox should NOT match /inbox/SMV-… — those are
     // different pages and step transitions between them must navigate, not
     // shift in place. Cross-page transitions go through location.href.
     return currentPath === stepUrl
@@ -318,7 +330,7 @@
     const pct = Math.round(((stepIdx + 1) / STEPS.length) * 100)
     card.innerHTML =
       '<h3>' + step.title + '</h3>' +
-      '<p>' + step.body + '</p>' +
+      '<p>' + renderBody(step.body) + '</p>' +
       '<div class="mi-tour-actions">' +
         '<button class="mi-tour-skip">' + (stepIdx === STEPS.length - 1 ? 'Close' : 'Skip tour') + '</button>' +
         '<div style="display:flex; gap:8px;">' +

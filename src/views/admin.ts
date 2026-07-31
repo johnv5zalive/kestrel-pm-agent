@@ -12,40 +12,47 @@ interface AdminProps {
   tourStep?: number
 }
 
+// TODO(appfolio-naming): two strings below were inherited from the ServiceTitan
+// build and describe screens that may not exist under these names in AppFolio.
+// They have been replaced with neutral descriptions rather than guessed at:
+//   - the source screen a coordinator exports from weekly (was "Follow-Ups screen")
+//   - the API credential header AppFolio issues (was "ST-App-Key", see connectRealSection)
+// Confirm both against a live AppFolio account before this goes in front of a
+// customer, then put the real names back.
 const ADAPTER_OPTIONS: Array<{ id: string; label: string; description: string; tier: string }> = [
   {
     id: 'adapter1',
-    label: 'Adapter 1 — REST API',
+    label: 'Direct connection',
     description:
-      'Direct AppFolio API. Multi-contact fan-out, completion check, note writeback.',
+      'The agent reads the maintenance schedule straight out of AppFolio, reaches every contact on a property, checks whether a visit was already booked, and writes its notes back.',
     tier: 'API add-on required',
   },
   {
     id: 'adapter2a',
-    label: 'Adapter 2A — Scheduled XLSX',
+    label: 'Automatic weekly report',
     description:
-      'Account admin schedules a custom Recurring Service Events report → XLSX → ingest inbox weekly.',
-    tier: 'API add-on required',
+      'Your AppFolio admin schedules a maintenance report to email itself every week. The agent reads it on arrival. Nothing to remember, no API needed.',
+    tier: 'No API add-on',
   },
   {
     id: 'adapter2b_full',
-    label: 'Adapter 2B — Coordinator export (full cols)',
+    label: 'Manual weekly export',
     description:
-      'Coordinator exports the Follow-Ups screen weekly. Edit Columns confirmed to expose contact phone/email.',
+      'The coordinator exports the upcoming maintenance list once a week and drops it in. Contact phone and email come through on the export.',
     tier: 'No API add-on',
   },
   {
     id: 'adapter2b_degraded',
-    label: 'Adapter 2B — Coordinator export (degraded)',
+    label: 'Manual weekly export — no contact columns',
     description:
-      'Same export, but contact phone/email columns unavailable. Falls back to Job-Summary-only extraction.',
+      'Same export, but phone and email are missing from it. The agent falls back to reading contact details out of the service notes.',
     tier: 'No API add-on',
   },
 ]
 
 export const adminPage = (p: AdminProps) =>
   layout({
-    title: 'Admin · Kestrel PM Booking Agent',
+    title: 'Admin · Kestrel Maintenance Scheduling Agent',
     tourStep: p.tourStep,
     currentPath: '/admin',
     body: html`
@@ -53,8 +60,9 @@ export const adminPage = (p: AdminProps) =>
         <div>
           <h1 class="font-black text-ink text-3xl tracking-tight">Admin</h1>
           <p class="text-ink-fade mt-1">
-            Synthetic-data CRUD, ingest adapter, SMS toggle, and demo clock.
-            Production cutover is a data swap, not a code change.
+            Choose how the agent gets your maintenance schedule, turn texting on or off,
+            and preview any job in any state. Going live swaps the sample data for
+            yours. Nothing here is rebuilt.
           </p>
         </div>
 
@@ -70,9 +78,9 @@ const adapterSection = (current: string) => html`
   <section data-tour-highlight="adapter-section" class="rounded-lg border border-canvas-deep bg-white">
     <header class="px-5 py-3 border-b border-canvas-deep flex items-center justify-between flex-wrap gap-3">
       <div>
-        <h2 class="font-bold text-ink text-lg tracking-tight">AppFolio ingest adapter</h2>
+        <h2 class="font-bold text-ink text-lg tracking-tight">How the agent gets your schedule</h2>
         <p class="text-sm text-ink-fade mt-0.5">
-          Switch the loader path to preview each tier's behavior.
+          Three ways in, depending on what your AppFolio plan allows. The rest of the agent works the same either way.
         </p>
       </div>
       ${samplePill('AppFolio')}
@@ -121,9 +129,9 @@ const smsToggleSection = (enabled: boolean) => html`
         <h2 class="font-bold text-ink text-lg tracking-tight">Outbound SMS</h2>
         <p class="text-sm text-ink-fade mt-0.5">
           ${enabled
-            ? 'Phase 1.5 active — outbound SMS sends as part of the T-5 step.'
-            : 'Phase 1 — outbound SMS dark until A2P 10DLC brand + campaign clear in Twilio TCR.'}
-          Inbound SMS is live regardless.
+            ? 'Texting is on. The agent sends a text five days before the visit if there has been no reply.'
+            : 'Texting is off until carrier registration for business messaging clears.'}
+          Replies by text are read either way.
         </p>
       </div>
       <form method="POST" action="/demo/_toggle-sms">
@@ -133,7 +141,7 @@ const smsToggleSection = (enabled: boolean) => html`
             ? 'btn-ghost text-sm'
             : 'btn-block-sm'}"
         >
-          ${enabled ? 'Switch to Phase 1 (dark)' : 'Switch to Phase 1.5 (live)'}
+          ${enabled ? 'Turn texting off' : 'Turn texting on'}
         </button>
       </form>
     </header>
@@ -145,26 +153,25 @@ const connectRealSection = () => html`
     <header class="px-5 py-3 border-b border-canvas-deep">
       <h2 class="font-bold text-ink text-lg tracking-tight">Connect real systems</h2>
       <p class="text-sm text-ink-fade mt-0.5">
-        Production cutover wizards. All form fields are disabled in demo —
-        this is a preview of what production setup looks like, with the runbook
-        Sagan walks the customer through.
+        What setup looks like when you go live. Fields are switched off here — this is
+        a preview of the steps, which Sagan walks you through.
       </p>
     </header>
     <div class="p-5 grid md:grid-cols-3 gap-3">
       ${connectCard(
         'appfolio',
         'AppFolio',
-        'OAuth2 client credentials + ST-App-Key. Unlocks Adapter 1 (API) when Kestrel Property Management authorizes the Sagan Integrator app.',
+        'Turns on the direct connection once Kestrel authorizes the integration. Credentials are issued by AppFolio when API access is provisioned.',
       )}
       ${connectCard(
         'gmail',
         'Google Workspace',
-        'Service account + domain-wide delegation on gmail.modify. Two mailboxes: pm-agent@ + pm-agent-ingest@kestrelpm.com.',
+        'Lets the agent send from and read replies at its own mailbox, and pick up the weekly maintenance report.',
       )}
       ${connectCard(
         'twilio',
         'Twilio',
-        'Account SID + Auth Token + Messaging Service SID + From number. Outbound SMS gated by 10DLC brand+campaign registration.',
+        'Adds text messaging and the short voice call. Texting switches on once carrier registration for business messaging clears.',
       )}
     </div>
   </section>
@@ -196,9 +203,9 @@ const jobOverrideSection = (jobs: JobQueueRow[]) => html`
   <section class="rounded-lg border border-canvas-deep bg-white">
     <header class="px-5 py-3 border-b border-canvas-deep flex items-start justify-between gap-3 flex-wrap">
       <div>
-        <h2 class="font-bold text-ink text-lg tracking-tight">Synthetic data — RSE state override</h2>
+        <h2 class="font-bold text-ink text-lg tracking-tight">Preview any job in any state</h2>
         <p class="text-sm text-ink-fade mt-0.5">
-          Force any job into any state. Useful for previewing specific lifecycle moments.
+          Sample data only. Move a job to any point in its lifecycle to see how it looks.
         </p>
       </div>
       ${v2Chip('auto-enroll', 'Auto-enroll new PM properties')}

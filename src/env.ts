@@ -27,5 +27,5 @@ export const env = {
   TWILIO_MESSAGING_SERVICE_SID: process.env.TWILIO_MESSAGING_SERVICE_SID ?? '',
   APP_BASE_URL: process.env.APP_BASE_URL ?? '',
 
-  APP_NAME: process.env.APP_NAME ?? 'Kestrel PM Booking Agent',
+  APP_NAME: process.env.APP_NAME ?? 'Kestrel Maintenance Scheduling Agent',
 }

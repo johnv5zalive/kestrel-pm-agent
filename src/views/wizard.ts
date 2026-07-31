@@ -22,7 +22,7 @@ const WIZARDS: Record<string, WizardConfig> = {
     id: 'appfolio',
     name: 'AppFolio',
     description:
-      'Direct API access. Unlocks Adapter 1: multi-contact fan-out, completion check, and AppFolio note writeback. Requires Kestrel Property Management on a plan with the API add-on enabled.',
+      'The direct connection. Lets the agent reach every contact on a property, check whether a visit was already booked, and write its notes back into AppFolio. Needs the API add-on on your AppFolio plan.',
     fields: [
       {
         label: 'Database name',
@@ -36,7 +36,7 @@ const WIZARDS: Record<string, WizardConfig> = {
       },
       {
         label: 'Client Secret',
-        hint: 'Shown once at provisioning. Store in Railway Variables, never in code.',
+        hint: 'Shown once when access is granted. Store it with your other credentials, never in code.',
         type: 'password',
         placeholder: '••••••••••••',
       },
@@ -50,7 +50,7 @@ const WIZARDS: Record<string, WizardConfig> = {
       {
         title: 'Confirm API add-on',
         body:
-          'API access requires the AppFolio API add-on on your plan. Without it this wizard is unavailable — Adapter 2B (Coordinator XLSX export) is the path.',
+          'The direct connection needs the API add-on on your AppFolio plan. Without it, use the weekly report or the manual export instead. Both work.',
       },
       {
         title: 'Request access for the Sagan Integrator',
@@ -60,17 +60,17 @@ const WIZARDS: Record<string, WizardConfig> = {
       {
         title: 'Capture credentials',
         body:
-          'Save Client ID, Client Secret, and the database name at the moment of provisioning — Client Secret is shown once.',
+          'Save the client ID, client secret and database name at the moment access is granted. The secret is only shown once.',
       },
       {
-        title: 'Paste into Railway',
+        title: 'Store the credentials',
         body:
-          'Railway → kestrel-pm-agent service → Variables: APPFOLIO_CLIENT_ID, APPFOLIO_CLIENT_SECRET, APPFOLIO_DATABASE, APPFOLIO_BASE_URL.',
+          'Sagan stores these on the agent so they never sit in the code or in this screen.',
       },
       {
         title: 'Switch adapter',
         body:
-          'Admin → AppFolio ingest adapter → Adapter 1 (REST API). Pre-send checks and multi-contact fan-out activate immediately.',
+          'In admin, switch to the direct connection. Reaching every contact and checking for existing bookings both start straight away.',
       },
     ],
     docsUrl: 'https://www.appfolio.com/',
@@ -79,11 +79,11 @@ const WIZARDS: Record<string, WizardConfig> = {
     id: 'gmail',
     name: 'Google Workspace (Gmail)',
     description:
-      'Service account with domain-wide delegation handles outbound email and inbound reply polling for the agent. Two mailboxes: pm-agent@kestrelpm.com (outbound + replies) and pm-agent-ingest@kestrelpm.com (XLSX drop on Adapter 2).',
+      'Gives the agent its own mailbox to send from and read replies at, plus a second one where the weekly maintenance report lands.',
     fields: [
       {
         label: 'Service Account JSON',
-        hint: 'The full credentials.json from Google Cloud Console, one line. Pasted directly as GOOGLE_WORKSPACE_SERVICE_ACCOUNT_JSON in Railway.',
+        hint: 'The full credentials file from Google Cloud Console, on one line.',
         type: 'textarea',
         placeholder: '{"type":"service_account","project_id":"…",…}',
       },
@@ -94,7 +94,7 @@ const WIZARDS: Record<string, WizardConfig> = {
       },
       {
         label: 'Ingest inbox',
-        hint: 'Adapter 2 only — where the weekly XLSX from AppFolio lands.',
+        hint: 'Only needed for the weekly report. This is where it lands.',
         placeholder: 'pm-agent-ingest@kestrelpm.com',
       },
     ],
@@ -102,7 +102,7 @@ const WIZARDS: Record<string, WizardConfig> = {
       {
         title: 'Provision mailboxes',
         body:
-          'Kestrel PM IT creates pm-agent@kestrelpm.com (outbound + replies) and pm-agent-ingest@kestrelpm.com (XLSX drop).',
+          'Kestrel IT creates two mailboxes: one the agent sends from and reads replies at, and one where the weekly report lands.',
       },
       {
         title: 'Create service account',
@@ -115,9 +115,9 @@ const WIZARDS: Record<string, WizardConfig> = {
           'Workspace Admin Console → Security → API Controls → Domain-wide Delegation. Add the SA Client ID with scope https://www.googleapis.com/auth/gmail.modify.',
       },
       {
-        title: 'Paste into Railway',
+        title: 'Store the credentials',
         body:
-          'Variables: GOOGLE_WORKSPACE_SERVICE_ACCOUNT_JSON (full JSON), GOOGLE_WORKSPACE_IMPERSONATE_USER, APPFOLIO_INGEST_INBOX.',
+          'Sagan stores the service account details and both mailbox addresses on the agent.',
       },
     ],
     docsUrl: 'https://developers.google.com/workspace/guides/create-credentials',
@@ -126,7 +126,7 @@ const WIZARDS: Record<string, WizardConfig> = {
     id: 'twilio',
     name: 'Twilio',
     description:
-      'Programmable Messaging + Voice + Lookup for SMS, voice IVR, and line-type detection. Twilio account is created under Kestrel Property Management\'s business entity, not Sagan\'s.',
+      'Handles text messages, the short automated call, and checking whether a number is a mobile or a landline. The account is created under Kestrel Property Management, not Sagan.',
     fields: [
       {
         label: 'Account SID',
@@ -141,7 +141,7 @@ const WIZARDS: Record<string, WizardConfig> = {
       },
       {
         label: 'Messaging Service SID',
-        hint: 'The pool the registered 10DLC campaign attaches to.',
+        hint: 'The number pool your business messaging registration attaches to.',
         placeholder: 'MG…',
       },
       {
@@ -154,7 +154,7 @@ const WIZARDS: Record<string, WizardConfig> = {
       {
         title: 'Create account',
         body:
-          'Dana Reyes creates a Twilio account under Kestrel Property Management\'s business entity. Existing Nextiva 10DLC registration is NOT portable.',
+          'The Twilio account is created under Kestrel Property Management, not Sagan. Any registration you already hold with another provider does not carry over.',
       },
       {
         title: 'Provision number',
@@ -162,19 +162,19 @@ const WIZARDS: Record<string, WizardConfig> = {
           'Twilio Phone Numbers → Buy. US local number with both Voice and Messaging capabilities.',
       },
       {
-        title: 'Submit A2P 10DLC brand + campaign',
+        title: 'Register for business messaging',
         body:
-          'Realistic 2–3 week clearance window. Inbound SMS works from day 1 regardless. Outbound SMS gated by Twilio TCR approval.',
+          'Expect two to three weeks for carriers to approve it. Replies by text work from day one either way. Only sending is held up.',
       },
       {
         title: 'Wire webhooks',
         body:
-          'POST /webhooks/twilio/sms (inbound SMS) and POST /webhooks/twilio/voice (IVR keypress) on the deployed Railway URL. Validates with TWILIO_AUTH_TOKEN.',
+          'Point Twilio at the agent for inbound texts and for keypresses on the automated call. Both are verified against your Twilio credentials.',
       },
       {
-        title: 'Phase 1.5 cutover',
+        title: 'Switch texting on',
         body:
-          'When 10DLC clears in TCR: flip SMS_OUTBOUND_ENABLED=true in Railway. No code change. Outbound SMS resumes at the next T-5 tick.',
+          'Once carriers approve the registration, texting is switched on with a single setting. No rebuild. The agent starts including a text in its follow-ups straight away.',
       },
     ],
     docsUrl: 'https://www.twilio.com/docs/usage/a2p-10dlc',
@@ -185,7 +185,7 @@ export const wizardPage = (id: string) => {
   const w = WIZARDS[id]
   if (!w) return null
   return layout({
-    title: `Connect ${w.name} · Kestrel PM Booking Agent`,
+    title: `Connect ${w.name} · Kestrel Maintenance Scheduling Agent`,
     body: html`
       <div class="max-w-4xl mx-auto px-6 py-8 space-y-6">
         <a
@@ -206,9 +206,9 @@ export const wizardPage = (id: string) => {
         <div
           class="rounded-md border border-demo-gold-line/40 bg-demo-gold-soft/60 px-4 py-3 text-sm text-demo-gold-deep"
         >
-          <strong>Demo mode.</strong> All inputs below are disabled. This wizard
-          is a preview of production setup — the actual paste happens in
-          Railway Variables, not here.
+          <strong>Sample data.</strong> The fields below are switched off. This is
+          a preview of what setup involves. Credentials are entered during setup,
+          not here.
         </div>
 
         <section class="rounded-lg border border-canvas-deep bg-white">

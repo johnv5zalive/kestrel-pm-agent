@@ -96,10 +96,10 @@ export const DEMO_CLOCK_RANGE = { min: 0, max: 61 }
  * without a dedicated tick.
  */
 export const DEMO_SNAP_POINTS = [
-  { offset: 6, label: 'T-10', subLabel: 'Apr 21' }, // Apr 15 + 6 = Apr 21
-  { offset: 11, label: 'T-5', subLabel: 'Apr 26' },
-  { offset: 16, label: 'T-0', subLabel: 'May 1' },
-  { offset: 41, label: 'June PMs', subLabel: 'May 26' },
+  { offset: 6, label: '10 days out', subLabel: 'Apr 21' }, // Apr 15 + 6 = Apr 21
+  { offset: 11, label: '5 days out', subLabel: 'Apr 26' },
+  { offset: 16, label: 'Visit due', subLabel: 'May 1' },
+  { offset: 41, label: 'June visits', subLabel: 'May 26' },
 ]
 
 export default route

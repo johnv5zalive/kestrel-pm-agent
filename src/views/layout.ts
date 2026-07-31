@@ -60,7 +60,7 @@ const appHeader = (showDemoTag: boolean) => html`
           width="160"
           height="32"
         />
-        <span class="hidden sm:inline text-ink-fade text-sm">PM Booking Agent</span>
+        <span class="hidden sm:inline text-ink-fade text-sm">Maintenance Scheduling Agent</span>
       </a>
       <nav class="flex items-center gap-3">
         ${showDemoTag

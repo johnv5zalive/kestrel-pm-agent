@@ -23,11 +23,11 @@ export const V2_SPECS: V2Spec[] = [
     status: 'On the roadmap',
     forWho: 'Maintenance Coordinator',
     whatItDoes:
-      'Once a contact has proposed a date and the Coordinator has confirmed, the agent creates the actual Work Order in AppFolio via the API — no manual AppFolio entry.',
+      'Once a contact has given a date and you have confirmed it, the agent creates the work order in AppFolio itself, so nobody re-types it.',
     whyItMatters:
-      'V1 stops at "Awaiting Human · date proposed." The team paused there deliberately: the agent captures the date, the Coordinator still confirms the booking. V2 closes that loop.',
+      'Today the agent stops once it has a date, and a person confirms it. That was deliberate: a wrong date never reaches a calendar unseen. This closes the loop once you trust it.',
     dependencies: [
-      'Adapter 1 (REST API) — only path that can write Work Orders',
+      'The direct AppFolio connection, which is the only path that can create a work order',
       'Approval to write to production AppFolio',
       'Conflict-resolution rules: technician availability, equipment lead time',
     ],
@@ -40,11 +40,11 @@ export const V2_SPECS: V2Spec[] = [
     whatItDoes:
       'Replace the 30-second IVR fallback with a real conversational AI that holds a date-negotiation phone call, captures the date, and surfaces it to the queue exactly like an inbound text would.',
     whyItMatters:
-      'Some stakeholders are cautious about AI phone interactions — V1 keeps voice dumb (press-1 / press-2). V2 brings AI voice in carefully, with full call recording and Coordinator review of every transcript before booking confirms.',
+      'People are rightly cautious about AI phone calls, so today the call is deliberately simple: press 1 or press 2. This brings a real conversation in carefully, with every call recorded and read before anything is booked.',
     dependencies: [
-      'Vapi (managed voice agent platform)',
-      'Vapi can import the same Twilio number, no re-registration needed',
-      'Coordinator confidence threshold — auto-book or always Awaiting Human?',
+      'A managed voice-agent platform',
+      'It can use the same phone number, so nothing needs re-registering',
+      'A decision on whether it books directly or always checks with you first',
     ],
   },
   {
@@ -55,7 +55,7 @@ export const V2_SPECS: V2Spec[] = [
     whatItDoes:
       'When a contact asks a question instead of proposing a date ("is this covered under our management agreement?"), the agent answers it in-thread from a Kestrel Property Management knowledge base, then re-asks for the booking date.',
     whyItMatters:
-      'V1 routes every question directly to the Coordinator. V2 deflects the predictable ~80% (agreement coverage, scope, scheduling rules) and only escalates the genuinely novel ones.',
+      'Today every question comes to you. This answers the repetitive ones about scope, coverage and scheduling rules, and only passes on the genuinely new ones.',
     dependencies: [
       'Knowledge base seeded from Coordinator history',
       'Confidence threshold below which questions still escalate',
@@ -68,13 +68,13 @@ export const V2_SPECS: V2Spec[] = [
     status: 'On the roadmap',
     forWho: 'Kestrel Property Management operations + dispatch',
     whatItDoes:
-      'Extend this PM-specific inbox into a generic team inbox covering all contact-facing email + SMS threads (maintenance requests, dispatch, follow-ups). One place to find a conversation regardless of business unit.',
+      'Widen this inbox to cover every email and text thread with a contact, not just scheduled maintenance. One place to find a conversation, whoever it was with.',
     whyItMatters:
-      'A common ask from operations teams. The V1 schema is already designed to absorb this — the conversation/message tables are channel-agnostic.',
+      'A common ask from operations teams, and the way the data is already stored means it does not need rebuilding to support it.',
     dependencies: [
       'Per-thread routing rules: who owns which channel',
-      'Auth roles (Coordinator vs Dispatch vs Owner)',
-      'Search + filtering across high message volume',
+      'Who is allowed to see and reply to what',
+      'Search that still works once there are thousands of threads',
     ],
   },
   {
@@ -83,27 +83,27 @@ export const V2_SPECS: V2Spec[] = [
     status: 'On the roadmap',
     forWho: 'Office / billing',
     whatItDoes:
-      'A sister agent that reviews AppFolio invoices for completeness and format before they export to QuickBooks — flags missing line items, miscoded categories, and inconsistent labor rates.',
+      'A second agent that checks AppFolio invoices before they reach QuickBooks, flagging missing lines, wrong categories and inconsistent labour rates.',
     whyItMatters:
-      'A frequent back-office pain after PM. Explicitly deprioritized for v1 in favor of PM, which solves a bigger, revenue-generating problem. Strong candidate for the next build.',
+      'The next back-office pain after scheduling. Left out of this build deliberately so scheduling could ship first. A strong candidate for the next one.',
     dependencies: [
       'AppFolio + QuickBooks both reachable',
       'Kestrel Property Management\'s invoice format conventions',
-      'Approval thresholds: which flags auto-fix, which escalate',
+      'Which problems it fixes itself and which it brings to you',
     ],
   },
   {
     id: 'auto-enroll',
-    title: 'Auto-enroll new properties in PM',
+    title: 'Auto-enroll new properties',
     status: 'Future phase',
     forWho: 'Kestrel Property Management sales',
     whatItDoes:
-      'When a new turnover or repair Work Order closes in AppFolio, automatically create a Recurring Service template at the appropriate cadence and add it to the PM rotation.',
+      'When a turnover or repair closes in AppFolio, set the property up on the right maintenance cadence automatically instead of someone remembering to.',
     whyItMatters:
-      'Surfaced during discovery. V1 reads existing Recurring Service Events; it doesn\'t enroll anyone. V2 closes the loop from a first-time property → ongoing PM coverage.',
+      'Today the agent reads the maintenance schedule it is given. It does not add anything to it. This closes the gap between a one-off job and ongoing coverage.',
     dependencies: [
-      'Adapter 1 + Work-Order-write permissions',
-      'Cadence-by-equipment-class rules (annual vs quarterly)',
+      'The direct AppFolio connection, with permission to write',
+      'Rules for which equipment needs servicing how often',
       'Contact opt-in confirmation flow',
     ],
   },
@@ -113,13 +113,13 @@ export const V2_SPECS: V2Spec[] = [
     status: 'In v2',
     forWho: 'Maintenance Coordinator',
     whatItDoes:
-      'Score each upcoming RSE for "likely to convert async" vs "needs phone follow-up." Coordinator queue sorts the high-touch ones to the top of their phone list, deflecting the rest.',
+      'Work out which visits will settle over email and which will need a call, and sort your list so the calls you actually have to make are at the top.',
     whyItMatters:
-      'Reduces phone-time-per-booking even further by predicting which contacts need a human before the cadence runs.',
+      'Cuts phone time further by spotting the contacts who need a person before the reminders even go out.',
     dependencies: [
-      '6+ months of agent reply data per property',
-      'Contact reply latency + classification history',
-      'Equipment age + service type as signal',
+      'Six months or so of reply history per property',
+      'How fast each contact usually replies, and with what',
+      'Equipment age and service type as signals',
     ],
   },
   {
@@ -128,13 +128,13 @@ export const V2_SPECS: V2Spec[] = [
     status: 'Future phase',
     forWho: 'Contacts on iMessage',
     whatItDoes:
-      'Send outbound business messages via Apple Messages for Business, bypassing 10DLC entirely for iPhone-registered numbers.',
+      'Send messages through Apple Messages for Business, which skips carrier registration entirely for iPhone numbers.',
     whyItMatters:
-      'Considered as a bridge during the 10DLC waiting period. Rejected for v1: AMB requires Apple approval and extensive setup, and Kestrel Property Management\'s contact base is predominantly business and mobile phones (many not Apple-ID-registered). Inbound SMS at Phase 1 + full SMS at Phase 1.5 ships faster and reaches more contacts.',
+      'Considered as a way around the wait for carrier registration and rejected. It needs Apple approval and a lot of setup, and most contacts here are on business numbers not registered with Apple. Ordinary texting reaches more people sooner.',
     dependencies: [
       'Apple Messages for Business approval',
-      'Contact base segmentation: which numbers iMessage-eligible',
-      'Routing rules: iMessage when available, Twilio SMS otherwise',
+      'Working out which numbers are eligible',
+      'Rules for when to use it and when to fall back to a normal text',
     ],
   },
 ]

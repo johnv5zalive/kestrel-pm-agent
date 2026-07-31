@@ -91,7 +91,7 @@ CREATE TABLE IF NOT EXISTS recurring_service_events (
   ingested_via_adapter TEXT NOT NULL,
   raw_xlsx_row TEXT,
   appfolio_status TEXT NOT NULL DEFAULT 'Not Attempted',
-  booking_availability TEXT NOT NULL DEFAULT 'Not Bookable',
+  booking_availability TEXT NOT NULL DEFAULT 'Not yet scheduled',
   notes TEXT
 );
 CREATE INDEX IF NOT EXISTS idx_rse_state ON recurring_service_events(state);

@@ -22,15 +22,15 @@ interface DetailProps {
 }
 
 const ADAPTER_LABEL: Record<string, string> = {
-  adapter1: 'API',
-  adapter2a: 'Scheduled XLSX',
-  adapter2b_full: 'Coordinator XLSX (full cols)',
-  adapter2b_degraded: 'Coordinator XLSX (degraded)',
+  adapter1: 'Direct connection',
+  adapter2a: 'Automatic weekly report',
+  adapter2b_full: 'Manual weekly export',
+  adapter2b_degraded: 'Manual weekly export — no contact columns',
 }
 
 export const jobDetailPage = (p: DetailProps) =>
   layout({
-    title: `${p.detail.customer.name} · Kestrel PM Booking Agent`,
+    title: `${p.detail.customer.name} · Kestrel Maintenance Scheduling Agent`,
     tourStep: p.tourStep,
     currentPath: `/inbox/${p.detail.rse.id}`,
     body: html`
@@ -80,7 +80,7 @@ const detailHeader = (p: DetailProps) => {
             ${j.customer.name}
           </h1>
           <p class="text-ink-fade mt-1">
-            ${j.recurring_service.name} · ${j.equipment.length} unit${j.equipment.length === 1 ? '' : 's'} ·
+            ${j.recurring_service.name} · ${j.equipment.length} asset${j.equipment.length === 1 ? '' : 's'} ·
             ${j.location.address_city}, ${j.location.address_state}
           </p>
           <p class="text-xs text-ink-muted mt-2">${meta.description}</p>
@@ -156,7 +156,7 @@ const cta = (state: AgentState, rseId: string) => {
           hx-target="#thread"
           hx-swap="outerHTML"
           hx-indicator="#sim-indicator"
-          title="M5: triggers a synthetic inbound reply that runs through real LLM classification + extraction."
+          title="Drops in a sample reply so you can watch the agent read it, sort it, and pull the date out."
         >
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
             <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0011.667 0l3.181-3.183m-4.991-2.691v4.992m0 0h4.992m-4.992 0l-3.181-3.183M2.985 9.348a8.25 8.25 0 0114.064-3.183l3.181 3.183" />
@@ -170,10 +170,14 @@ const cta = (state: AgentState, rseId: string) => {
 }
 
 const conversationThread = (p: DetailProps) =>
-  conversationFragment(p.detail, p.smsOutboundEnabled)
+  conversationFragment(p.detail, p.smsOutboundEnabled, p.demoClockIso)
 
 /** Stand-alone thread fragment, returnable from htmx swap endpoints. */
-export const conversationFragment = (detail: JobDetail, smsOutboundEnabled: boolean) => {
+export const conversationFragment = (
+  detail: JobDetail,
+  smsOutboundEnabled: boolean,
+  demoClockIso: string,
+) => {
   const events = mergeEvents(detail)
   const showSmsPreview = shouldShowSmsPreview(detail, smsOutboundEnabled)
   return html`
@@ -188,9 +192,13 @@ export const conversationFragment = (detail: JobDetail, smsOutboundEnabled: bool
         ? emptyConversation(detail)
         : html`
             ${interceptBanner(
-              html`Every <em>Sent</em> below is intercepted in this demo — no real outreach left the agent. Production runs the same code paths.`,
+              html`Nothing below was actually sent. This is sample data, and the agent runs the same way in production.`,
             )}
-            ${events.map((e) => (e.kind === 'outreach' ? outreachCard(e, smsOutboundEnabled) : replyCard(e)))}
+            ${events.map((e) =>
+              e.kind === 'outreach'
+                ? outreachCard(e, smsOutboundEnabled, demoClockIso)
+                : replyCard(e, demoClockIso),
+            )}
           `}
       ${showSmsPreview ? smsPreviewCard(detail) : ''}
       <div id="sim-indicator" class="htmx-indicator text-sm text-ink-muted py-2">
@@ -238,8 +246,9 @@ const smsPreviewCard = (detail: JobDetail) => {
     weekday: 'long',
     month: 'long',
     day: 'numeric',
+    timeZone: 'UTC',
   })
-  const body = `Kestrel Property Management: ${detail.recurring_service.name} due around ${dueDay}. Reply with a date or visit kestrelpm.com/request-service.`
+  const body = `Kestrel Property Management: ${detail.recurring_service.name.toLowerCase()} at ${detail.location.name ?? detail.customer.name} is due ${dueDay}. Reply with a day that works and we'll confirm a time. Reply STOP to opt out.`
   return html`
     <article class="rounded-lg border border-dashed border-canvas-deep bg-canvas opacity-90">
       <header class="px-4 py-2.5 border-b border-canvas-deep flex items-center justify-between gap-3 flex-wrap">
@@ -252,14 +261,13 @@ const smsPreviewCard = (detail: JobDetail) => {
           <span class="text-xs font-bold uppercase tracking-wider text-ink">SMS · scheduled</span>
           <span class="text-xs text-ink-muted">would send to <span class="font-mono">${recipient}</span></span>
         </div>
-        <span class="demo-tag-action">Channel currently dark · enables at Phase 1.5</span>
+        <span class="demo-tag-action">Not sending yet</span>
       </header>
       <div class="px-4 py-3">
         <pre class="text-sm text-ink leading-relaxed whitespace-pre-wrap font-sans">${body}</pre>
         <p class="mt-2.5 text-[11px] text-ink-muted leading-relaxed">
-          Outbound SMS goes live when A2P 10DLC brand + campaign clear in
-          Twilio TCR. No code change at cutover —
-          <span class="font-mono">SMS_OUTBOUND_ENABLED=true</span> in Railway flips it.
+          Outbound texting switches on once carrier registration for business
+          messaging clears. No rebuild needed.
         </p>
       </div>
     </article>
@@ -301,13 +309,14 @@ const daysBefore = (dueDateIso: string, days: number) => {
 const outreachCard = (
   o: JobDetail['outreach'][number] & { kind: 'outreach' },
   smsOutboundEnabled: boolean,
+  demoClockIso: string,
 ) => {
-  if (o.channel === 'email') return outreachEmailCard(o)
-  if (o.channel === 'sms') return outreachSmsCard(o, smsOutboundEnabled)
-  return outreachVoiceCard(o)
+  if (o.channel === 'email') return outreachEmailCard(o, demoClockIso)
+  if (o.channel === 'sms') return outreachSmsCard(o, smsOutboundEnabled, demoClockIso)
+  return outreachVoiceCard(o, demoClockIso)
 }
 
-const outreachEmailCard = (o: JobDetail['outreach'][number]) => html`
+const outreachEmailCard = (o: JobDetail['outreach'][number], demoClockIso: string) => html`
   <article class="rounded-lg border border-canvas-deep bg-white">
     <header class="px-4 py-2.5 border-b border-canvas-deep flex items-center justify-between gap-3 flex-wrap">
       <div class="flex items-center gap-2 min-w-0">
@@ -320,8 +329,7 @@ const outreachEmailCard = (o: JobDetail['outreach'][number]) => html`
         <span class="text-xs text-ink-muted">to <span class="font-mono">${o.recipient}</span></span>
       </div>
       <div class="flex items-center gap-2">
-        ${interceptTag(`would have sent to ${o.recipient}`)}
-        <span class="text-xs text-ink-muted">${formatRelative(o.sent_at_demo_clock)}</span>
+        <span class="text-xs text-ink-muted">${formatRelative(o.sent_at_demo_clock, demoClockIso)}</span>
       </div>
     </header>
     <div class="px-4 py-3">
@@ -334,6 +342,7 @@ const outreachEmailCard = (o: JobDetail['outreach'][number]) => html`
 const outreachSmsCard = (
   o: JobDetail['outreach'][number],
   smsOutboundEnabled: boolean,
+  demoClockIso: string,
 ) => html`
   <article class="rounded-lg border border-canvas-deep ${smsOutboundEnabled ? 'bg-white' : 'bg-canvas opacity-90'}">
     <header class="px-4 py-2.5 border-b border-canvas-deep flex items-center justify-between gap-3 flex-wrap">
@@ -348,9 +357,9 @@ const outreachSmsCard = (
       </div>
       <div class="flex items-center gap-2">
         ${smsOutboundEnabled
-          ? interceptTag(`would have sent to ${o.recipient}`)
-          : html`<span class="demo-tag-action">Phase 1.5 — pending 10DLC clearance</span>`}
-        <span class="text-xs text-ink-muted">${formatRelative(o.sent_at_demo_clock)}</span>
+          ? ''
+          : html`<span class="demo-tag-action">Not sent — texting not switched on yet</span>`}
+        <span class="text-xs text-ink-muted">${formatRelative(o.sent_at_demo_clock, demoClockIso)}</span>
       </div>
     </header>
     <div class="px-4 py-3">
@@ -362,7 +371,7 @@ const outreachSmsCard = (
   </article>
 `
 
-const outreachVoiceCard = (o: JobDetail['outreach'][number]) => html`
+const outreachVoiceCard = (o: JobDetail['outreach'][number], demoClockIso: string) => html`
   <article class="rounded-lg border border-canvas-deep bg-white">
     <header class="px-4 py-2.5 border-b border-canvas-deep flex items-center justify-between gap-3 flex-wrap">
       <div class="flex items-center gap-2">
@@ -375,8 +384,7 @@ const outreachVoiceCard = (o: JobDetail['outreach'][number]) => html`
         <span class="text-xs text-ink-muted">to <span class="font-mono">${o.recipient}</span></span>
       </div>
       <div class="flex items-center gap-2">
-        ${interceptTag('no Twilio call placed')}
-        <span class="text-xs text-ink-muted">${formatRelative(o.sent_at_demo_clock)}</span>
+        <span class="text-xs text-ink-muted">${formatRelative(o.sent_at_demo_clock, demoClockIso)}</span>
       </div>
     </header>
     <div class="px-4 py-3">
@@ -388,7 +396,7 @@ const outreachVoiceCard = (o: JobDetail['outreach'][number]) => html`
   </article>
 `
 
-const replyCard = (r: JobDetail['replies'][number] & { kind: 'reply' }) => {
+const replyCard = (r: JobDetail['replies'][number] & { kind: 'reply' }, demoClockIso: string) => {
   const classBg: Record<string, string> = {
     'proposed-date': 'bg-emerald-50 border-emerald-200',
     question: 'bg-amber-50 border-amber-200',
@@ -410,7 +418,7 @@ const replyCard = (r: JobDetail['replies'][number] & { kind: 'reply' }) => {
           </span>
           <span class="text-xs text-ink-muted truncate">from <span class="font-mono">${r.from_address}</span></span>
         </div>
-        <span class="text-xs text-ink-muted">${formatRelative(r.received_at_demo_clock)}</span>
+        <span class="text-xs text-ink-muted">${formatRelative(r.received_at_demo_clock, demoClockIso)}</span>
       </header>
       <div class="px-4 py-3">
         <pre class="text-sm text-ink leading-relaxed whitespace-pre-wrap font-sans">${r.raw_text}</pre>
@@ -453,10 +461,10 @@ const appfolioCard = (d: JobDetail) => html`
         </div>
         <div class="flex flex-wrap gap-1.5">
           <span class="inline-flex items-center rounded bg-brand-navy text-white px-2 py-0.5 text-[11px] font-bold">
-            ${d.recurring_service.cadence === 'annual' ? 'AnnualPM' : ''}
-            ${d.recurring_service.cadence === 'biannual' ? 'BiAnnualPM' : ''}
-            ${d.recurring_service.cadence === 'quarterly' ? 'QuarterlyPM' : ''}
-            ${d.recurring_service.cadence === 'monthly' ? 'MonthlyPM' : ''}
+            ${d.recurring_service.cadence === 'annual' ? 'AnnualService' : ''}
+            ${d.recurring_service.cadence === 'biannual' ? 'SemiAnnualService' : ''}
+            ${d.recurring_service.cadence === 'quarterly' ? 'QuarterlyService' : ''}
+            ${d.recurring_service.cadence === 'monthly' ? 'MonthlyService' : ''}
           </span>
           ${d.location.business_unit
             ? html`<span class="inline-flex items-center rounded bg-canvas-deep text-ink-fade px-2 py-0.5 text-[11px]">
@@ -494,7 +502,7 @@ const appfolioCard = (d: JobDetail) => html`
           <span>Contacts (${d.contacts.length})</span>
           ${d.contacts.length > 1
             ? html`<span class="text-ink-muted normal-case font-normal tracking-normal">
-                role-ranked
+                in priority order
               </span>`
             : ''}
         </div>
@@ -505,7 +513,7 @@ const appfolioCard = (d: JobDetail) => html`
 
       <div>
         <div class="text-[11px] uppercase tracking-wider text-ink-muted mb-1.5 font-bold">
-          Job Summary
+          Service Notes
         </div>
         <p class="text-sm text-ink leading-relaxed">
           ${d.recurring_service.job_summary ?? html`<span class="text-ink-muted italic">(none)</span>`}
@@ -518,7 +526,7 @@ const appfolioCard = (d: JobDetail) => html`
           <div class="text-ink">${d.rse.appfolio_status}</div>
         </div>
         <div>
-          <div class="uppercase tracking-wider text-ink-muted font-bold mb-0.5">Booking</div>
+          <div class="uppercase tracking-wider text-ink-muted font-bold mb-0.5">Scheduling</div>
           <div class="text-ink">${d.rse.booking_availability}</div>
         </div>
         <div>
@@ -582,7 +590,7 @@ const activityTimeline = (d: JobDetail, ingestAdapter: string) => {
         <div class="flex items-center gap-2 text-xs text-ink-muted">
           ${writebackActive
             ? html`<span class="inline-flex items-center gap-1 rounded bg-emerald-50 text-emerald-800 border border-emerald-200 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider">
-                AppFolio writeback live
+                Writing back to AppFolio
               </span>`
             : ''}
           <span>${items.length} event${items.length === 1 ? '' : 's'}</span>
@@ -601,12 +609,11 @@ const activityTimeline = (d: JobDetail, ingestAdapter: string) => {
       </div>
       <footer class="px-4 py-2 border-t border-canvas-deep text-[11px] text-ink-muted">
         ${writebackActive
-          ? html`Durable audit trail. AppFolio note writeback active —
-              <span class="font-mono">[PM Agent]</span> entries below mirror to
-              <span class="font-mono">/api/v2/properties/&#x7b;id&#x7d;/notes</span>.`
-          : html`Durable audit trail. Replaces AppFolio note writeback when
-              on Adapter 2. Switch adapter to API in admin to preview the
-              writeback path.`}
+          ? html`Every send, reply and status change is logged here. With the direct
+              connection on, these entries are also written back to the property record
+              in AppFolio.`
+          : html`Every send, reply and status change is logged here. Turn on the direct
+              connection in admin to also write these back into AppFolio.`}
       </footer>
     </section>
   `
@@ -643,7 +650,7 @@ const mergeAuditEvents = (d: JobDetail, ingestAdapter: string): TimelineItem[] =
           id: 2_000_000 + t.id,
           ts: t.at_demo_clock,
           level: 'info',
-          line: `[PM Agent] Would POST /api/v2/properties/${d.location.id}/notes — "${noteBody}"`,
+          line: `Note added to the AppFolio property record: "${noteBody}"`,
         })
       }
     }
@@ -700,4 +707,5 @@ const formatTs = (iso: string) =>
     hour: 'numeric',
     minute: '2-digit',
     hour12: true,
+    timeZone: 'UTC',
   })

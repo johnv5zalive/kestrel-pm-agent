@@ -92,7 +92,7 @@ route.post('/:rseId/_book', (c) => {
   const settings = getSettings()
   const now = settings.demo_clock_iso
   transition(rseId, 'Closed_Booked', 'Coordinator confirmed booking', now)
-  appendLog(rseId, 'success', '[PM Agent] Coordinator marked as booked.', now)
+  appendLog(rseId, 'success', '[Scheduling Agent] Coordinator marked as booked.', now)
   return c.redirect(`/inbox/${rseId}`)
 })
 
@@ -103,7 +103,7 @@ route.post('/:rseId/_optout', (c) => {
   const settings = getSettings()
   const now = settings.demo_clock_iso
   transition(rseId, 'Closed_OptedOut', 'Coordinator marked opted-out', now)
-  appendLog(rseId, 'info', '[PM Agent] Coordinator marked as opted-out.', now)
+  appendLog(rseId, 'info', '[Scheduling Agent] Coordinator marked as opted-out.', now)
   return c.redirect(`/inbox/${rseId}`)
 })
 
@@ -242,7 +242,7 @@ route.post('/:rseId/_simulate-reply', async (c) => {
 
   const after = getJobDetail(rseId)
   if (!after) return c.notFound()
-  return c.html(conversationFragment(after, settings.sms_outbound_enabled === 1))
+  return c.html(conversationFragment(after, settings.sms_outbound_enabled === 1, now))
 })
 
 export default route

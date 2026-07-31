@@ -11,7 +11,7 @@ import { layout } from './layout.js'
  */
 export const landingPage = (props: { tourStep?: number } = {}) =>
   layout({
-    title: 'Kestrel Property Management — PM Booking Agent demo',
+    title: 'Kestrel Property Management — Maintenance Scheduling Agent demo',
     showDemoTag: false,
     hideHeader: true,
     tourStep: props.tourStep,
@@ -31,7 +31,7 @@ export const landingPage = (props: { tourStep?: number } = {}) =>
             <span
               class="hidden sm:inline pl-3 ml-1 border-l border-canvas-deep text-ink-fade text-sm"
             >
-              PM Booking Agent · prototype
+              Maintenance Scheduling Agent · prototype
             </span>
           </div>
           <a href="https://kestrelpm.com" class="text-sm text-ink-fade hover:text-ink transition-colors" target="_blank" rel="noopener">
@@ -55,28 +55,28 @@ export const landingPage = (props: { tourStep?: number } = {}) =>
               <h1
                 class="font-black text-ink leading-[1.05] text-4xl md:text-[2.75rem] lg:text-5xl tracking-tight mb-4"
               >
-                Book unit maintenance
+                Get maintenance booked
                 <span class="text-brand-navy">without spending the day</span>
                 on the phone.
               </h1>
               <p class="text-base md:text-lg text-ink-fade leading-relaxed mb-6 max-w-xl">
-                An agent that handles the email, SMS and voice follow-ups for the
-                Recurring Service Events list — so the Maintenance Coordinator only
-                picks up the phone for the contacts who actually need a call.
+                Every scheduled visit needs someone at the property to agree a date.
+                The agent does that chasing by email, text and phone, and only puts
+                a job in front of your coordinator when it genuinely needs a person.
               </p>
 
               <!-- Bullets: 3 punchy, each tied to a real demo flow -->
               <ul class="space-y-2.5 mb-7">
                 ${bullet(
-                  'Ingest the weekly RSE list from AppFolio and run a 10/5/0 outreach cadence per job',
+                  'Reads the week\'s maintenance schedule out of AppFolio and starts chasing 10 days before each visit',
                   'inbox',
                 )}
                 ${bullet(
-                  'Capture replies across email, SMS and voice IVR — surface only what needs a human',
+                  'Reads the replies, pulls out the date, and escalates to a text then a short call if nobody answers',
                   'route',
                 )}
                 ${bullet(
-                  'Per-job Activity Timeline as the durable audit trail. AppFolio note writeback when API access is granted',
+                  'Keeps a record of every message and every status change, so you can always show who was told what and when',
                   'timeline',
                 )}
               </ul>
@@ -211,12 +211,12 @@ const previewCard = () => html`
         <span class="text-[11px] font-bold uppercase tracking-wider text-state-awaiting">
           Awaiting Human · date proposed
         </span>
-        <span class="text-[11px] text-ink-muted font-mono">RSE-BEACON-2026-05</span>
+        <span class="text-[11px] text-ink-muted font-mono">SMV-BEACON-2026-05</span>
       </div>
 
       <h4 class="font-bold text-ink text-lg leading-tight">Beacon Ridge Condominiums</h4>
       <p class="text-sm text-ink-fade mt-1">
-        Quarterly PM · 4 units · Raleigh, NC
+        Quarterly Service · 4 assets · Raleigh, NC
       </p>
 
       <div class="mt-5 p-4 rounded-md bg-canvas border border-canvas-deep">
@@ -225,7 +225,7 @@ const previewCard = () => html`
           <span>2 days ago</span>
         </div>
         <p class="text-sm text-ink leading-snug">
-          "Tuesday May 5 in the afternoon works for me — after 1pm. Need to
+          "Tuesday May 5 in the afternoon works for me, after 1pm. Need to
           coordinate with the on-site team for Building C access so let me know
           what time you're starting."
         </p>

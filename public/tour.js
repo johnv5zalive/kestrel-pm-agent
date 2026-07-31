@@ -23,72 +23,104 @@
       url: '/today',
       anchor: '[data-tour-highlight="lane-today"]',
       side: 'top',
-      title: 'Step 1 of 9 · Your morning',
-      body: 'Everything the agent is working on, in one list, hardest first. Scheduled visits, owner approvals and vendor insurance all land here together, because that is how the day arrives.',
+      title: 'Step 1 of 13 · Your morning',
+      body: 'One list, everything the agent is working on, hardest first. Scheduled visits, owner approvals and vendor insurance all land here together, because that is how the day actually arrives.',
     },
     {
       n: 2,
-      url: '/inbox',
-      anchor: '[data-tour-highlight="lane-awaiting"]',
-      side: 'top',
-      title: 'Step 2 of 9 · The queue',
-      body: 'These are the {{jobCount}} maintenance visits coming up. The agent is chasing a date for each one. The ones at the top are waiting on you.',
+      url: '/today',
+      anchor: '[data-tour-highlight="today-summary"]',
+      side: 'bottom',
+      title: 'Step 2 of 13 · The day in four numbers',
+      body: 'Before opening anything: how much needs a person, how much has gone quiet, how much money is sitting waiting on a decision, and whether anyone is about to send an uninsured contractor to a property.',
     },
     {
       n: 3,
-      url: '/inbox/SMV-BEACON-2026-05',
-      anchor: '[data-tour-highlight="conversation-thread"]',
-      side: 'right',
-      title: 'Step 3 of 9 · One property, several contacts',
-      body: 'Beacon Ridge has three people on file. The agent emailed the facilities director first because he is the best person to ask. He came back with a date, so the other two were never contacted.',
+      url: '/today',
+      anchor: '[data-tour-item="APR-2026-0143"]',
+      side: 'bottom',
+      title: 'Step 3 of 13 · When it comes to you',
+      body: 'Only three things bring a job here. Somebody answered, a deadline passed, or it is an emergency. This one is the third: the agent texted and emailed an hour ago, nobody has replied, and four units have no power. It will not sit politely waiting.',
     },
     {
       n: 4,
-      url: '/inbox/SMV-BEACON-2026-05',
-      anchor: '[data-tour-highlight="reply-extraction"]',
-      side: 'left',
-      title: 'Step 4 of 9 · Reading the reply',
-      body: 'The agent reads the reply and pulls out the date and time window. When it is not confident enough, it does not guess. It puts the job in front of you instead.',
+      url: '/today',
+      anchor: '[data-tour-item="APR-2026-0138"]',
+      side: 'bottom',
+      title: 'Step 4 of 13 · The one you would have missed',
+      body: 'The owner wrote "approved up to $2,500" against a $3,200 quote. That reads like a yes. Book it and you are $700 short with nobody to bill. The agent caught the gap and stopped.',
     },
     {
       n: 5,
-      url: '/inbox/SMV-BEACON-2026-05',
-      anchor: '[data-tour-highlight="cta-book"]',
-      side: 'bottom',
-      title: 'Step 5 of 9 · You confirm',
-      body: 'One click marks it booked. The agent stops short of booking it in AppFolio for you, so a wrong date never reaches a calendar without a person seeing it first.',
+      url: '/today',
+      anchor: '[data-tour-highlight="lane-handled"]',
+      side: 'top',
+      title: 'Step 5 of 13 · What never reaches you',
+      body: 'These are being chased right now and you will not hear about them unless something changes. That is the actual product. The list above is the exception, not the workload.',
     },
     {
       n: 6,
       url: '/inbox',
-      anchor: '[data-tour-highlight="time-travel"]',
-      side: 'bottom',
-      title: 'Step 6 of 9 · Watch it run',
-      body: 'Drag this to move the date forward. Reminders go out, replies come back, and jobs move between the groups above. Try it after this step.',
+      anchor: '[data-tour-highlight="lane-awaiting"]',
+      side: 'top',
+      title: 'Step 6 of 13 · Scheduled visits',
+      body: 'The first track on its own. These are the {{jobCount}} maintenance visits coming up, and the agent is chasing a date for each one.',
     },
     {
       n: 7,
-      url: '/admin',
-      anchor: '[data-tour-highlight="adapter-section"]',
+      url: '/inbox/SMV-BEACON-2026-05',
+      anchor: '[data-tour-highlight="conversation-thread"]',
       side: 'right',
-      title: 'Step 7 of 9 · Getting your schedule in',
-      body: 'Four ways in, depending on what your AppFolio plan allows. Only the first needs an API. Whichever you pick, the rest of the agent works the same.',
+      title: 'Step 7 of 13 · One property, several contacts',
+      body: 'Beacon Ridge has three people on file. The agent emailed the facilities director first because he is the best person to ask. He came back with a date, so the other two were never contacted.',
     },
     {
       n: 8,
-      url: '/admin',
-      anchor: '[data-tour-highlight="connect-real"]',
-      side: 'top',
-      title: 'Step 8 of 9 · Going live',
-      body: 'This is what setup looks like on your own accounts. The fields are switched off here because this is sample data.',
+      url: '/inbox/SMV-BEACON-2026-05',
+      anchor: '[data-tour-highlight="reply-extraction"]',
+      side: 'left',
+      title: 'Step 8 of 13 · Reading the reply',
+      body: 'The agent reads the reply and pulls out the date and time window. When it is not confident enough, it does not guess. It puts the job in front of you instead.',
     },
     {
       n: 9,
+      url: '/inbox/SMV-BEACON-2026-05',
+      anchor: '[data-tour-highlight="cta-book"]',
+      side: 'bottom',
+      title: 'Step 9 of 13 · You confirm',
+      body: 'One click marks it booked. The agent stops short of booking it in AppFolio for you, so a wrong date never reaches a calendar without a person seeing it first.',
+    },
+    {
+      n: 10,
       url: '/inbox',
-      anchor: null, // no highlight on final step
+      anchor: '[data-tour-highlight="time-travel"]',
+      side: 'bottom',
+      title: 'Step 10 of 13 · Watch it run',
+      body: 'Drag this to move the date forward. Reminders go out, replies come back, and jobs move between the groups above. Try it after this step.',
+    },
+    {
+      n: 11,
+      url: '/admin',
+      anchor: '[data-tour-highlight="adapter-section"]',
+      side: 'right',
+      title: 'Step 11 of 13 · Getting your schedule in',
+      body: 'Four ways in, depending on what your AppFolio plan allows. Only the first needs an API. Whichever you pick, the rest of the agent works the same.',
+    },
+    {
+      n: 12,
+      url: '/admin',
+      anchor: '[data-tour-highlight="connect-real"]',
+      side: 'top',
+      title: 'Step 12 of 13 · Going live',
+      body: 'This is what setup looks like on your own accounts. The fields are switched off here because this is sample data.',
+    },
+    {
+      n: 13,
+      url: '/today',
+      anchor: null,
       side: 'center',
-      title: 'Step 9 of 9 · That is the whole thing',
-      body: 'Click Finish to go back to the queue and click around. You can replay this walkthrough any time from the link in the header.',
+      title: 'Step 13 of 13 · That is the whole thing',
+      body: 'Three things chased, one list, and a person pulled in only when it matters. Click Finish to drop back into Today and click around.',
     },
   ]
 
@@ -98,6 +130,22 @@
       const host = document.querySelector('[data-job-count]')
       return host ? host.getAttribute('data-job-count') : 'the'
     })
+  }
+
+  // Browsers throttle requestAnimationFrame to zero in a hidden or occluded
+  // tab. The walkthrough used to depend on RAF alone, which meant that opening
+  // it in a background tab — or alt-tabbing away while it loaded — left the
+  // bubble invisible with no way to recover. Every RAF here now has a timer
+  // backstop so the tour renders whether or not the tab is being painted.
+  function nextFrame(cb) {
+    var done = false
+    function run() {
+      if (done) return
+      done = true
+      cb()
+    }
+    requestAnimationFrame(run)
+    setTimeout(run, 60)
   }
 
   function getQuery(name) {
@@ -196,8 +244,19 @@
   function whenStable(target, cb) {
     let last = target.getBoundingClientRect()
     let stable = 0
+    let settled = false
+    let rafAlive = false
     const start = performance.now()
+    function settle() {
+      if (settled) return
+      settled = true
+      // Measure at settle time, not at schedule time, so a scroll that
+      // finished in between is accounted for.
+      cb(target.getBoundingClientRect())
+    }
     function tick() {
+      if (settled) return
+      rafAlive = true
       const now = performance.now()
       const r = target.getBoundingClientRect()
       const moved = Math.abs(r.top - last.top) > 0.5 || Math.abs(r.left - last.left) > 0.5
@@ -205,12 +264,19 @@
       else stable++
       last = r
       if (stable >= 3 || now - start > 1500) {
-        cb(r)
+        settle()
         return
       }
       requestAnimationFrame(tick)
     }
     requestAnimationFrame(tick)
+    // Backstop for a hidden or occluded tab, where RAF is throttled to zero and
+    // the loop above never runs. Deliberately only fires when no frame has been
+    // seen at all — otherwise it would race a smooth scroll still in progress
+    // and pin the spotlight to where the element used to be.
+    setTimeout(function () {
+      if (!rafAlive) settle()
+    }, 400)
   }
 
   function ensureNode(cls) {
@@ -295,7 +361,7 @@
     arrow.style.left = arrowLeft + 'px'
     arrow.style.top = arrowTop + 'px'
 
-    requestAnimationFrame(() => {
+    nextFrame(function () {
       card.classList.add('shown')
       arrow.classList.add('shown')
       cutout.style.opacity = '1'
@@ -306,6 +372,35 @@
     const fallback = ['right', 'bottom', 'left', 'top']
     if (!side) return fallback
     return [side].concat(fallback.filter((s) => s !== side))
+  }
+
+  // The element the current step is spotlighting, plus which side it wanted.
+  // Kept so scrolling can re-place the overlay without re-running the step
+  // (which would scroll the page back and fight the presenter).
+  let activeTarget = null
+  let activeSide = 'right'
+
+  let lastPlacedTop = null
+  let lastPlacedLeft = null
+  let repositionTimer = null
+
+  function repositionActive() {
+    if (!activeTarget || !document.body.classList.contains('mi-tour-active')) return
+    const card = document.querySelector('.mi-tour-card')
+    const arrow = document.querySelector('.mi-tour-arrow')
+    const cutout = document.querySelector('.mi-tour-cutout')
+    if (!card || !arrow || !cutout) return
+    const r = activeTarget.getBoundingClientRect()
+    if (
+      lastPlacedTop !== null &&
+      Math.abs(r.top - lastPlacedTop) < 0.5 &&
+      Math.abs(r.left - lastPlacedLeft) < 0.5
+    ) {
+      return
+    }
+    lastPlacedTop = r.top
+    lastPlacedLeft = r.left
+    position(r, activeSide, card, arrow, cutout)
   }
 
   function gotoStep(stepIdx) {
@@ -365,6 +460,7 @@
 
     if (!step.anchor) {
       // Final/center step — no target. Center the card.
+      activeTarget = null
       cutout.style.display = 'none'
       arrow.classList.remove('shown')
       card.classList.remove('shown')
@@ -372,32 +468,43 @@
       const cardH = 200
       card.style.left = Math.max(12, (window.innerWidth - cardW) / 2) + 'px'
       card.style.top = Math.max(80, (window.innerHeight - cardH) / 2) + 'px'
-      requestAnimationFrame(function () { card.classList.add('shown') })
+      nextFrame(function () { card.classList.add('shown') })
       return
     }
 
     const target = findVisible(step.anchor)
     if (!target) {
       // Anchor missing — degrade gracefully: center, no cutout.
+      activeTarget = null
       cutout.style.display = 'none'
       arrow.classList.remove('shown')
       card.classList.remove('shown')
       card.style.left = Math.max(12, (window.innerWidth - 360) / 2) + 'px'
       card.style.top = Math.max(80, (window.innerHeight - 220) / 2) + 'px'
-      requestAnimationFrame(function () { card.classList.add('shown') })
+      nextFrame(function () { card.classList.add('shown') })
       return
     }
 
+    activeTarget = target
+    activeSide = step.side || 'right'
+    lastPlacedTop = null
+    startRepositionLoop()
     cutout.style.display = 'block'
     cutout.style.opacity = '0'
     card.classList.remove('shown')
     arrow.classList.remove('shown')
-    target.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' })
+    target.scrollIntoView({
+      behavior: document.hidden ? 'auto' : 'smooth',
+      block: 'center',
+      inline: 'center',
+    })
     whenStable(target, function (rect) { position(rect, step.side || 'right', card, arrow, cutout) })
   }
 
   function finish(opts) {
     opts = opts || {}
+    activeTarget = null
+    stopRepositionLoop()
     document.body.classList.remove('mi-tour-active')
     const els = document.querySelectorAll('.mi-tour-overlay, .mi-tour-cutout, .mi-tour-card, .mi-tour-arrow')
     els.forEach(function (el) { el.remove() })
@@ -412,15 +519,35 @@
     }
   }
 
-  // Re-position on resize so the bubble stays attached.
-  window.addEventListener('resize', function () {
-    const card = document.querySelector('.mi-tour-card')
-    if (!card) return
-    const t = card.querySelector('h3')
-    const title = t ? t.textContent : ''
-    const idx = STEPS.findIndex(function (s) { return s.title === title })
-    if (idx >= 0) show(idx)
-  })
+  // Keep the spotlight attached to its element while the page moves under it.
+  // Without this, scrolling during a step leaves the highlight behind, which is
+  // exactly what happens when someone is presenting and scrolls to make a point.
+  let repositionQueued = false
+  function queueReposition() {
+    if (repositionQueued) return
+    repositionQueued = true
+    nextFrame(function () {
+      repositionQueued = false
+      repositionActive()
+    })
+  }
+  window.addEventListener('scroll', queueReposition, { passive: true })
+  window.addEventListener('resize', queueReposition)
+
+  // Belt and braces for a live demo. Scroll events do not fire in every
+  // situation (a backgrounded or occluded tab is the common one), and a
+  // spotlight sitting 700px away from the thing it is pointing at is a bad look
+  // in front of an audience. A cheap poll re-attaches it within 200ms whatever
+  // happens, and only runs while the walkthrough is open.
+  function startRepositionLoop() {
+    if (repositionTimer) return
+    repositionTimer = setInterval(repositionActive, 200)
+  }
+  function stopRepositionLoop() {
+    if (!repositionTimer) return
+    clearInterval(repositionTimer)
+    repositionTimer = null
+  }
 
   function init() {
     // Tour only activates from explicit ?tour=N — no auto-start, no cookies.

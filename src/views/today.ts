@@ -63,7 +63,11 @@ export const todayPage = (p: Props) => {
             const rows = p.items.filter((i) => i.lane === l.lane)
             if (rows.length === 0) return ''
             return html`
-              <section ${l.lane === 'needs-you' ? html`data-tour-highlight="lane-today"` : ''}>
+              <section
+                ${l.lane === 'needs-you' ? html`data-tour-highlight="lane-today"` : ''}
+                ${l.lane === 'gone-quiet' ? html`data-tour-highlight="lane-quiet"` : ''}
+                ${l.lane === 'waiting' ? html`data-tour-highlight="lane-handled"` : ''}
+              >
                 <div class="flex items-baseline gap-3 mb-1">
                   <h2 class="font-bold text-ink text-lg tracking-tight">${l.title}</h2>
                   <span class="text-ink-muted text-sm">${rows.length}</span>
@@ -88,7 +92,10 @@ export const todayPage = (p: Props) => {
 }
 
 const summaryBar = (s: ReturnType<typeof summarise>) => html`
-  <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-8">
+  <div
+    data-tour-highlight="today-summary"
+    class="grid sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-8"
+  >
     ${card(String(s.needsYou), s.needsYou === 1 ? 'thing needs you' : 'things need you', s.emergencies > 0 ? `${s.emergencies} marked emergency` : 'Nothing marked emergency', s.emergencies > 0 ? 'red' : 'sky')}
     ${card(String(s.goneQuiet), 'have gone quiet', 'Open, with no recent movement', s.goneQuiet > 0 ? 'gold' : 'plain')}
     ${card(money(s.dollarsHeldUp), 'waiting on a decision', 'Across all open approvals', 'plain')}
@@ -114,7 +121,11 @@ const card = (value: string, label: string, sub: string, tone: 'red' | 'gold' | 
 }
 
 const row = (i: WorkItem, nowIso: string) => html`
-  <a href="${i.href}" class="block px-4 py-3 hover:bg-canvas transition-colors group">
+  <a
+    href="${i.href}"
+    data-tour-item="${i.id}"
+    class="block px-4 py-3 hover:bg-canvas transition-colors group"
+  >
     <div class="flex items-start justify-between gap-4">
       <div class="min-w-0 flex-1">
         <div class="flex items-center gap-2 flex-wrap mb-0.5">

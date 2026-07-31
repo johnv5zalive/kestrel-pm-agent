@@ -152,8 +152,8 @@ route.post('/sms', async (c) => {
   }
 
   db.prepare(
-    `INSERT INTO inbound_replies (rse_id, channel, contact_id, from_address, raw_text, classification, parsed_date, llm_confidence, received_at_demo_clock)
-     VALUES (?, 'sms', ?, ?, ?, ?, ?, ?, ?)`,
+    `INSERT INTO inbound_replies (subject_type, subject_id, channel, contact_id, from_address, raw_text, classification, parsed_date, llm_confidence, received_at_demo_clock)
+     VALUES ('visit', ?, 'sms', ?, ?, ?, ?, ?, ?, ?)`,
   ).run(
     job.rseId,
     job.contactId,
@@ -263,8 +263,8 @@ route.post('/voice/keypress', async (c) => {
       now,
     )
     db.prepare(
-      `INSERT INTO inbound_replies (rse_id, channel, contact_id, from_address, raw_text, classification, parsed_date, llm_confidence, received_at_demo_clock)
-       VALUES (?, 'voice-keypress', ?, ?, ?, NULL, NULL, NULL, ?)`,
+      `INSERT INTO inbound_replies (subject_type, subject_id, channel, contact_id, from_address, raw_text, classification, parsed_date, llm_confidence, received_at_demo_clock)
+       VALUES ('visit', ?, 'voice-keypress', ?, ?, ?, NULL, NULL, NULL, ?)`,
     ).run(job.rseId, job.contactId, from, '[Pressed 1: request a date]', now)
     // Production: would then prompt for spoken date and run transcription;
     // for v1 we route to human and let the Coordinator follow up.
@@ -291,8 +291,8 @@ route.post('/voice/keypress', async (c) => {
       now,
     )
     db.prepare(
-      `INSERT INTO inbound_replies (rse_id, channel, contact_id, from_address, raw_text, classification, parsed_date, llm_confidence, received_at_demo_clock)
-       VALUES (?, 'voice-keypress', ?, ?, ?, NULL, NULL, NULL, ?)`,
+      `INSERT INTO inbound_replies (subject_type, subject_id, channel, contact_id, from_address, raw_text, classification, parsed_date, llm_confidence, received_at_demo_clock)
+       VALUES ('visit', ?, 'voice-keypress', ?, ?, ?, NULL, NULL, NULL, ?)`,
     ).run(
       job.rseId,
       job.contactId,

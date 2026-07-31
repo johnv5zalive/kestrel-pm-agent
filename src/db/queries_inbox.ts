@@ -1,5 +1,13 @@
 import { db } from './client.js'
 import type { AgentState, InboundClassification } from '../agent/state_machine.js'
+import {
+  getThread,
+  logLine,
+  logsSince,
+  recordTransition,
+  transitionedAt,
+  visit,
+} from './threads.js'
 
 export interface JobQueueRow {
   rse_id: string
@@ -39,25 +47,25 @@ export function listJobs(): JobQueueRow[] {
       rs.name AS recurring_service_name,
       (SELECT COUNT(*) FROM equipment e WHERE e.location_id = l.id) AS equipment_count,
       (SELECT COUNT(*) FROM contacts cn WHERE cn.location_id = l.id) AS contact_count,
-      (SELECT COUNT(*) FROM outreach_attempts oa WHERE oa.rse_id = r.id) AS outreach_count,
-      (SELECT COUNT(*) FROM inbound_replies ir WHERE ir.rse_id = r.id) AS reply_count,
+      (SELECT COUNT(*) FROM outreach_attempts oa WHERE oa.subject_type = 'visit' AND oa.subject_id = r.id) AS outreach_count,
+      (SELECT COUNT(*) FROM inbound_replies ir WHERE ir.subject_type = 'visit' AND ir.subject_id = r.id) AS reply_count,
       (
         SELECT MAX(ts) FROM (
-          SELECT MAX(received_at_demo_clock) AS ts FROM inbound_replies WHERE rse_id = r.id
+          SELECT MAX(received_at_demo_clock) AS ts FROM inbound_replies WHERE subject_type = 'visit' AND subject_id = r.id
           UNION ALL
-          SELECT MAX(sent_at_demo_clock) AS ts FROM outreach_attempts WHERE rse_id = r.id
+          SELECT MAX(sent_at_demo_clock) AS ts FROM outreach_attempts WHERE subject_type = 'visit' AND subject_id = r.id
           UNION ALL
-          SELECT MAX(at_demo_clock) AS ts FROM state_transitions WHERE rse_id = r.id
+          SELECT MAX(at_demo_clock) AS ts FROM state_transitions WHERE subject_type = 'visit' AND subject_id = r.id
         )
       ) AS last_activity_iso,
       (
-        SELECT raw_text FROM inbound_replies WHERE rse_id = r.id ORDER BY received_at_demo_clock DESC LIMIT 1
+        SELECT raw_text FROM inbound_replies WHERE subject_type = 'visit' AND subject_id = r.id ORDER BY received_at_demo_clock DESC LIMIT 1
       ) AS latest_reply_text,
       (
-        SELECT classification FROM inbound_replies WHERE rse_id = r.id ORDER BY received_at_demo_clock DESC LIMIT 1
+        SELECT classification FROM inbound_replies WHERE subject_type = 'visit' AND subject_id = r.id ORDER BY received_at_demo_clock DESC LIMIT 1
       ) AS latest_reply_classification,
       (
-        SELECT parsed_date FROM inbound_replies WHERE rse_id = r.id ORDER BY received_at_demo_clock DESC LIMIT 1
+        SELECT parsed_date FROM inbound_replies WHERE subject_type = 'visit' AND subject_id = r.id ORDER BY received_at_demo_clock DESC LIMIT 1
       ) AS latest_reply_parsed_date
     FROM recurring_service_events r
     JOIN recurring_services rs ON rs.id = r.recurring_service_id
@@ -185,26 +193,11 @@ export function getJobDetail(rseId: string): JobDetail | null {
   const equipment = db
     .prepare(`SELECT * FROM equipment WHERE location_id = ? ORDER BY id ASC`)
     .all(location_id) as JobDetail['equipment']
-  const outreach = db
-    .prepare(
-      `SELECT * FROM outreach_attempts WHERE rse_id = ? ORDER BY sent_at_demo_clock ASC`,
-    )
-    .all(rseId) as JobDetail['outreach']
-  const replies = db
-    .prepare(
-      `SELECT * FROM inbound_replies WHERE rse_id = ? ORDER BY received_at_demo_clock ASC`,
-    )
-    .all(rseId) as JobDetail['replies']
-  const logs = db
-    .prepare(
-      `SELECT id, ts_demo_clock, level, line FROM agent_logs WHERE rse_id = ? ORDER BY id ASC`,
-    )
-    .all(rseId) as JobDetail['logs']
-  const transitions = db
-    .prepare(
-      `SELECT id, from_state, to_state, reason, at_demo_clock FROM state_transitions WHERE rse_id = ? ORDER BY id ASC`,
-    )
-    .all(rseId) as JobDetail['transitions']
+  const thread = getThread(visit(rseId))
+  const outreach = thread.outreach as unknown as JobDetail['outreach']
+  const replies = thread.replies as unknown as JobDetail['replies']
+  const logs = thread.logs as JobDetail['logs']
+  const transitions = thread.transitions as unknown as JobDetail['transitions']
   return {
     rse,
     recurring_service,
@@ -220,16 +213,7 @@ export function getJobDetail(rseId: string): JobDetail | null {
 }
 
 export function getLogsSince(rseId: string, sinceId: number) {
-  return db
-    .prepare(
-      `SELECT id, ts_demo_clock, level, line FROM agent_logs WHERE rse_id = ? AND id > ? ORDER BY id ASC LIMIT 500`,
-    )
-    .all(rseId, sinceId) as Array<{
-    id: number
-    ts_demo_clock: string
-    level: 'info' | 'warn' | 'error' | 'success'
-    line: string
-  }>
+  return logsSince(visit(rseId), sinceId)
 }
 
 export function appendLog(
@@ -238,20 +222,12 @@ export function appendLog(
   line: string,
   tsDemoClock: string,
 ) {
-  db.prepare(
-    `INSERT INTO agent_logs (rse_id, ts_demo_clock, level, line) VALUES (?, ?, ?, ?)`,
-  ).run(rseId, tsDemoClock, level, line)
+  logLine(visit(rseId), level, line, tsDemoClock)
 }
 
-/** RSE IDs that transitioned at exactly this clock (the most recent tick). */
+/** Visit IDs that changed state at exactly this clock (the most recent tick). */
 export function listRsesTransitionedAt(atDemoClock: string): string[] {
-  return (
-    db
-      .prepare(
-        `SELECT DISTINCT rse_id FROM state_transitions WHERE at_demo_clock = ?`,
-      )
-      .all(atDemoClock) as Array<{ rse_id: string }>
-  ).map((r) => r.rse_id)
+  return transitionedAt('visit', atDemoClock)
 }
 
 export function transition(
@@ -260,12 +236,5 @@ export function transition(
   reason: string,
   atDemoClock: string,
 ) {
-  const cur = db
-    .prepare(`SELECT state FROM recurring_service_events WHERE id = ?`)
-    .get(rseId) as { state: AgentState } | undefined
-  if (!cur) throw new Error(`unknown rse: ${rseId}`)
-  db.prepare(`UPDATE recurring_service_events SET state = ? WHERE id = ?`).run(toState, rseId)
-  db.prepare(
-    `INSERT INTO state_transitions (rse_id, from_state, to_state, reason, at_demo_clock) VALUES (?, ?, ?, ?, ?)`,
-  ).run(rseId, cur.state, toState, reason, atDemoClock)
+  recordTransition(visit(rseId), toState, reason, atDemoClock)
 }

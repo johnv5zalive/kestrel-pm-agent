@@ -1622,11 +1622,10 @@ export function runSeed() {
     // Wipe existing rows. CASCADE handles children.
     db.prepare('DELETE FROM customers').run()
     db.prepare('DELETE FROM agent_logs').run() // detached after CASCADE; defensive
-    db.prepare('DELETE FROM agent_runs').run()
     db.prepare('DELETE FROM outreach_attempts').run()
     db.prepare('DELETE FROM inbound_replies').run()
     db.prepare('DELETE FROM state_transitions').run()
-    db.prepare("DELETE FROM sqlite_sequence WHERE name IN ('agent_logs','agent_runs','outreach_attempts','inbound_replies','state_transitions')").run()
+    db.prepare("DELETE FROM sqlite_sequence WHERE name IN ('agent_logs','outreach_attempts','inbound_replies','state_transitions')").run()
 
     const insCustomer = db.prepare(`
       INSERT INTO customers (id, name, primary_phone, primary_email, address_street, address_city, address_state, address_zip)
@@ -1652,18 +1651,18 @@ export function runSeed() {
       VALUES (?, ?, ?, ?, ?, 'adapter2a', ?, 'Not yet scheduled')
     `)
     const insOutreach = db.prepare(`
-      INSERT INTO outreach_attempts (rse_id, channel, contact_id, recipient, subject, body_text, sent_at_demo_clock, intercepted)
-      VALUES (?, ?, ?, ?, ?, ?, ?, 1)
+      INSERT INTO outreach_attempts (subject_type, subject_id, channel, contact_id, recipient, subject, body_text, sent_at_demo_clock, intercepted)
+      VALUES ('visit', ?, ?, ?, ?, ?, ?, ?, 1)
     `)
     const insReply = db.prepare(`
-      INSERT INTO inbound_replies (rse_id, channel, contact_id, from_address, raw_text, classification, parsed_date, llm_confidence, received_at_demo_clock)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO inbound_replies (subject_type, subject_id, channel, contact_id, from_address, raw_text, classification, parsed_date, llm_confidence, received_at_demo_clock)
+      VALUES ('visit', ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `)
     const insLog = db.prepare(`
-      INSERT INTO agent_logs (rse_id, ts_demo_clock, level, line) VALUES (?, ?, ?, ?)
+      INSERT INTO agent_logs (subject_type, subject_id, ts_demo_clock, level, line) VALUES ('visit', ?, ?, ?, ?)
     `)
     const insTransition = db.prepare(`
-      INSERT INTO state_transitions (rse_id, from_state, to_state, reason, at_demo_clock) VALUES (?, ?, ?, ?, ?)
+      INSERT INTO state_transitions (subject_type, subject_id, from_state, to_state, reason, at_demo_clock) VALUES ('visit', ?, ?, ?, ?, ?)
     `)
 
     for (const j of JOBS) {

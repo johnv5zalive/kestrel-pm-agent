@@ -17,6 +17,7 @@
 
 import { db, getSettings } from '../db/client.js'
 import { appendLog, transition } from '../db/queries_inbox.js'
+import { recordOutreach, visit } from '../db/threads.js'
 import type { AgentState } from './state_machine.js'
 
 interface SchedulerCandidate {
@@ -241,17 +242,14 @@ function sendEmail(
     marker === 'T-10'
       ? `${greeting}\n\n${capitalize(service)} at ${job.customer_name} is due ${formatDay(job.due_date)}.\n\nReply with a day that works and we will confirm a time with the technician.\n\nThanks,\nKestrel Property Management`
       : `${greeting}\n\nFollowing up on the ${service} at ${job.customer_name}, due ${formatDay(job.due_date)}. We have not heard back yet.\n\nReply with any day that works and we will fit the technician around it.\n\nThanks,\nKestrel Property Management`
-  db.prepare(
-    `INSERT INTO outreach_attempts (rse_id, channel, contact_id, recipient, subject, body_text, sent_at_demo_clock, intercepted)
-     VALUES (?, 'email', ?, ?, ?, ?, ?, 1)`,
-  ).run(
-    job.rse_id,
-    job.primary_contact_id,
+  recordOutreach(visit(job.rse_id), {
+    channel: 'email',
+    contactId: job.primary_contact_id,
     recipient,
     subject,
     body,
-    clockIso,
-  )
+    sentAt: clockIso,
+  })
   appendLog(
     job.rse_id,
     'success',
@@ -271,10 +269,13 @@ function sendSms(
   const recipient = job.primary_phone!
   // A2P 10DLC requires opt-out language on every outbound template.
   const body = `Kestrel Property Management: ${job.recurring_service_name.toLowerCase()} at ${job.customer_name} is due ${formatDay(job.due_date)}. Reply with a day that works and we will confirm a time. Reply STOP to opt out.`
-  db.prepare(
-    `INSERT INTO outreach_attempts (rse_id, channel, contact_id, recipient, subject, body_text, sent_at_demo_clock, intercepted)
-     VALUES (?, 'sms', ?, ?, NULL, ?, ?, 1)`,
-  ).run(job.rse_id, job.primary_contact_id, recipient, body, clockIso)
+  recordOutreach(visit(job.rse_id), {
+    channel: 'sms',
+    contactId: job.primary_contact_id,
+    recipient,
+    body,
+    sentAt: clockIso,
+  })
   appendLog(
     job.rse_id,
     'success',
@@ -302,10 +303,13 @@ function sendVoiceIvr(
     .get(job.rse_id) as { id: string; name: string; phone: string } | undefined
   if (!landline) return
   const body = `IVR script: "This is a courtesy call from Kestrel Property Management about scheduled maintenance at your building. Press 1 to request a date. Press 2 to have a booking link emailed to you." (No keypress detected — call ended.)`
-  db.prepare(
-    `INSERT INTO outreach_attempts (rse_id, channel, contact_id, recipient, subject, body_text, sent_at_demo_clock, intercepted)
-     VALUES (?, 'voice', ?, ?, NULL, ?, ?, 1)`,
-  ).run(job.rse_id, landline.id, landline.phone, body, clockIso)
+  recordOutreach(visit(job.rse_id), {
+    channel: 'voice',
+    contactId: landline.id,
+    recipient: landline.phone,
+    body: body,
+    sentAt: clockIso,
+  })
   appendLog(
     job.rse_id,
     'info',

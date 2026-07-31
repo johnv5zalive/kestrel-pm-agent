@@ -210,8 +210,8 @@ route.post('/:rseId/_simulate-reply', async (c) => {
 
   // Insert the inbound_reply row.
   db.prepare(
-    `INSERT INTO inbound_replies (rse_id, channel, contact_id, from_address, raw_text, classification, parsed_date, llm_confidence, received_at_demo_clock)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    `INSERT INTO inbound_replies (subject_type, subject_id, channel, contact_id, from_address, raw_text, classification, parsed_date, llm_confidence, received_at_demo_clock)
+     VALUES ('visit', ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
   ).run(
     rseId,
     reply.channel,

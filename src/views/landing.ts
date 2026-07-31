@@ -55,34 +55,35 @@ export const landingPage = (props: { tourStep?: number } = {}) =>
               <h1
                 class="font-black text-ink leading-[1.05] text-4xl md:text-[2.75rem] lg:text-5xl tracking-tight mb-4"
               >
-                Get maintenance booked
-                <span class="text-brand-navy">without spending the day</span>
-                on the phone.
+                Stop chasing people
+                <span class="text-brand-navy">so the work can actually</span>
+                happen.
               </h1>
               <p class="text-base md:text-lg text-ink-fade leading-relaxed mb-6 max-w-xl">
-                Every scheduled visit needs someone at the property to agree a date.
-                The agent does that chasing by email, text and phone, and only puts
-                a job in front of your coordinator when it genuinely needs a person.
+                Three things hold maintenance up: nobody has agreed a date, the owner
+                has not approved the spend, or the vendor's insurance has lapsed. The
+                agent chases all three and only brings your coordinator the ones that
+                genuinely need a person.
               </p>
 
               <!-- Bullets: 3 punchy, each tied to a real demo flow -->
               <ul class="space-y-2.5 mb-7">
                 ${bullet(
-                  'Reads the week\'s maintenance schedule out of AppFolio and starts chasing 10 days before each visit',
+                  'Chases a date for every scheduled visit, escalating from email to text to a short call',
                   'inbox',
                 )}
                 ${bullet(
-                  'Reads the replies, pulls out the date, and escalates to a text then a short call if nobody answers',
+                  'Chases owners for approval on anything over their limit, and spots a capped yes before you book on it',
                   'route',
                 )}
                 ${bullet(
-                  'Keeps a record of every message and every status change, so you can always show who was told what and when',
+                  'Watches every vendor certificate and takes anyone with lapsed cover off the dispatch list',
                   'timeline',
                 )}
               </ul>
 
               <div class="flex flex-wrap items-center gap-3" data-tour-highlight="cta-try-demo">
-                <a href="/inbox?tour=1" class="btn-primary">
+                <a href="/today?tour=1" class="btn-primary">
                   <svg
                     class="w-4 h-4"
                     fill="none"
@@ -99,8 +100,8 @@ export const landingPage = (props: { tourStep?: number } = {}) =>
                   </svg>
                   Start the walkthrough
                 </a>
-                <a href="/inbox" class="btn-ghost">
-                  Open the inbox
+                <a href="/today" class="btn-ghost">
+                  See today's list
                   <svg
                     class="w-4 h-4"
                     fill="none"

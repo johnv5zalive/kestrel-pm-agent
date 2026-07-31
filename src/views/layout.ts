@@ -82,6 +82,9 @@ const appHeader = (showDemoTag: boolean) => html`
               Demo Mode · sample data
             </span>`
           : ''}
+        <a href="/today" class="text-sm text-ink font-medium hover:text-brand-navy transition-colors">
+          Today
+        </a>
         <a href="/inbox" class="text-sm text-ink-fade hover:text-ink transition-colors">
           Visits
         </a>

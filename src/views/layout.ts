@@ -83,7 +83,10 @@ const appHeader = (showDemoTag: boolean) => html`
             </span>`
           : ''}
         <a href="/inbox" class="text-sm text-ink-fade hover:text-ink transition-colors">
-          Coordinator inbox
+          Visits
+        </a>
+        <a href="/approvals" class="text-sm text-ink-fade hover:text-ink transition-colors">
+          Approvals
         </a>
         <a href="/admin" class="text-sm text-ink-fade hover:text-ink transition-colors">Admin</a>
         <a

@@ -9,6 +9,7 @@
  */
 
 import { db } from './client.js'
+import { seedApprovals } from './seed_approvals.js'
 import type { AgentState, InboundClassification } from '../agent/state_machine.js'
 
 export const DEMO_CLOCK_ISO = '2026-04-30T09:00:00.000Z'
@@ -1620,6 +1621,8 @@ const JOBS: SeedJob[] = [
 export function runSeed() {
   const tx = db.transaction(() => {
     // Wipe existing rows. CASCADE handles children.
+    db.prepare('DELETE FROM approval_requests').run()
+    db.prepare('DELETE FROM owners').run()
     db.prepare('DELETE FROM customers').run()
     db.prepare('DELETE FROM agent_logs').run() // detached after CASCADE; defensive
     db.prepare('DELETE FROM outreach_attempts').run()
@@ -1755,6 +1758,11 @@ export function runSeed() {
         insTransition.run(j.rseId, t.from, t.to, t.reason, t.at)
       }
     }
+
+    // Owners and their approval requests. Runs inside the same transaction so
+    // a partial seed can never be observed, and after the properties exist
+    // because approvals hang off locations.
+    seedApprovals()
 
     // Reset settings to canonical demo state.
     db.prepare(
